@@ -1,0 +1,20 @@
+{% extends './base.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% load bootstrap4 %}
+{% load configs %}
+
+{% block content %}
+
+    <p>Olá mundo Capacitação</p>
+    {% if capacitacoes %}
+        {% for capacitacao in capacitacoes %}
+            <p>Curso - {{capacitacao}}</p>
+            <p>Data / Hora - {{capacitacao.data_aula}}</p>
+            <p>Modalidade - {{capacitacao.tipo_capacitacao}}</p>
+            <p>Vagas - {{capacitacao.vagas}}</p>
+            <hr>
+        {% endfor %}
+    {% endif %}
+
+{% endblock %}

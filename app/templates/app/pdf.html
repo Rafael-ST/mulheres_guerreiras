@@ -1,0 +1,326 @@
+{% load static %}
+<style>
+        .onlyPrint{
+            display: none;
+        }
+
+        .onlyWeb{
+            display: block;
+        }
+@media print {
+    @import url("https://fonts.googleapis.com/css?family=Pacifico|Source+Sans+Pro:400,700");
+        @page {
+            margin: 1.25cm;
+        }
+    html {
+      color: #14213d;
+      font-family: Source Sans Pro;
+      font-size: 11pt;
+      line-height: 1.6; }
+      html body {
+        margin: 0; }
+      html h5 {
+        font-family: Pacifico;
+        font-size: 16pt;
+        margin: 0; }
+
+        .onlyPrint{
+            display: block;
+        }
+
+        .onlyWeb{
+            display: none;
+        }
+
+        #initial{
+            display: bloco;
+        }
+
+        #initial img {
+            width: 4.9cm;
+            margin: 0.25cm auto;
+        }
+
+        .formSubemetido{
+            font-size: 12pt;
+            font-weight: 500;
+            color: #14213d;
+            font-style: italic;
+        }
+
+        .formSubemetido span{
+            font-size: 10pt;
+            font-weight: 300;
+            color: #14213d;
+            font-style: normal;
+        }
+
+        .formSubemetido b.text-success{
+            color: green;
+        }
+
+        .formSubemetido b.text-warning{
+            color: rgb(238, 143, 0);
+        }
+
+        .sectionBloco .bloco{
+          background: #e9f9f7;
+          padding: 10px;
+           margin-bottom: 0.25cm;
+        }
+
+        .sectionBloco .bloco h5{
+            font-size: 13pt;
+            margin-bottom: 0.35cm;
+        }
+
+        .sectionBloco .bloco em b{
+            font-size: 11pt;
+            font-weight: 600;
+            color: #00a195 ;
+        }
+    
+        .formMainFisica figure.figureAlt a img{
+            height: 225px;
+            width: 100%;
+        }
+
+        .text-main{
+            font-weight: 300;
+        }
+
+        .br{
+            border: 1px solid blue;
+        }
+
+        .infoSection{
+            clear: both;
+        }
+
+        .textPink{
+            color: #00a195 ;
+        }
+
+        .teste 
+
+        .table {
+            width: 100%;
+            max-width: 100%;
+            margin-bottom: 1rem;
+            background-color: transparent;
+        }
+
+        .table thead th {
+            border-color: #00a195;
+        }
+
+        table {
+            border-collapse: collapse;
+        }
+
+        .table td, .table th {
+            padding: .75rem;
+            vertical-align: top;
+            border-top: 1px solid #a4b7c1;
+        }
+
+        .extensionList-label b{
+            font-size: 10pt;
+            color: #00a195;
+        }
+
+        #tableInvest{
+            width: 100%;
+        }
+}
+
+</style>
+
+<div>
+    <div id="initial" class="onlyPrint">
+        <img class="img" src="https://www.fortaleza.ce.gov.br/templates/pmf/images/logo-portal-prefeitura-fortaleza.png"  
+        alt="Fortaleza">
+        <h3 class="textPink bloco" style="position: absolute; top:0; right: 0;">Nossas guerreiras</h3> 
+
+        <div class="formSubemetido" style="position: absolute; top:1.15cm; right: 0;">
+            <span>Status:</span>
+            {% if form.instance.submetido != False %}
+            <b class="text-success">
+                Proposta submetida
+            </b>
+            {% else%}
+            <b class="text-warning">
+                Proposta em edição
+            </b>
+            {% endif %} 
+        </div>
+    </div>
+</div>
+
+<div class="onlyPrint infoSection">
+
+        <em><b>{{projeto.nome_empreendimento}}</b></em>      
+        <span style="position: absolute; right: 0;">
+            Data de emissão:<em><b>{% now "SHORT_DATETIME_FORMAT" %}</b></em>
+        </span>
+</div>
+<section class="sectionBloco">
+    <div class="bloco my-3">
+        <div class="row">
+            <div class="col-12 mb-2">
+                <h5>Dados do Emprendimento</h5>
+            </div>
+            <div class="col-md-4 col-sm-12">
+                <span>
+                    <b class="text-main">Bairro:</b> <em><b>{{ form.instance.bairro }}</b></em>
+                </span>
+            </div>
+            <div class="col-md-4 col-sm-12">
+                <span>
+                    <b class="text-main">Finalidade:</b> <em><b>{{ form.instance.get_finalidade_display }}</b></em>
+                </span>
+            </div>
+        </div>
+        <div class="row mt-2">
+            <div class="col-md-4 col-sm-12">
+                <span>
+                    <b class="text-main">Setor:</b> <em><b>{{ form.instance.setor }}</b></em>
+                </span>
+            </div>
+            <div class="col-md-4 col-sm-12">
+                <span>
+                    <b class="text-main">Atividade:</b> <em><b>{{ form.instance.atividade }}</b></em>
+                </span>
+            </div>
+            <div class="col-md-4 col-sm-12">
+                <span>
+                    <b class="text-main">Outra Renda:</b> <em><b>{{ form.instance.outra_renda }}</b></em>
+                </span>
+            </div>                                        
+        </div>
+    </div>
+
+    <div class="bloco my-3">
+        <div class="row">
+            <div class="col-12 mb-2">
+                <h5>Dados de Mercado I</h5>
+            </div>
+            <div class="col-md-6 col-sm-12">
+                <span>
+                    <b class="text-main">Você realizou estudo de mercado em outros empreendimentos?:</b> <em><b>{{ form.instance.get_estudo_setor_display }}</b></em>
+                </span>
+            </div>
+            <div class="col-md-6 col-sm-12">
+                <span>
+                    <b class="text-main">Qual a Idade dos seus clientes?</b> <em><b>{{ form.instance.idade_cliente }}</b></em>
+                </span>
+            </div>
+        </div>
+        <div class="row mt-2">
+            <div class="col-md-6 col-sm-12">
+                <span>
+                    <b class="text-main">Com qual frequência o cliente vai ao seu estabelecimento?</b> <em><b>{{ form.instance.get_frequencia_display }}</b></em>
+                </span>
+            </div>
+            <div class="col-md-6 col-sm-12">
+                <span>
+                    <b class="text-main">Qual o tamanho do mercado em que você atua ou atuará?</b> <em><b>{{ form.instance.get_tamanho_mercado_display }}</b></em>
+                </span>
+            </div>                                       
+        </div>
+        <div class="row mt-2">
+            <div class="col-md-12 col-sm-12">
+                <span>
+                    <b class="text-main">A localização do seu empreendimento fica ou ficará?</b> <em><b>{{ form.instance.get_localizacao_display }}</b></em>
+                </span>
+            </div>                                        
+            <div class="col-md-12 col-sm-12 mt-2">
+                <span>
+                    <b class="text-main">Qual o motivo da escolha da localização do empreendimento?</b> <em><b>{{ form.instance.get_motivo_localizacao_display }}</b></em>
+                </span>
+            </div>                                         
+        </div>
+        
+        <div class="row mt-2">
+            <div class="col-md-12 col-sm-12">
+                <span>
+                    <b class="text-main">Qual vai ser o principal meio de divulgação do seu negócio?</b> <em><b>{{ form.instance.get_divulgacao_display }}</b></em>
+                </span>
+            </div>                                        
+            <div class="col-md-12 col-sm-12 mt-2">
+                <span>
+                    <b class="text-main"> Divulgação Outro</b> <em><b>{{ form.instance.divulgacao_outra }}</b></em>
+                </span>
+            </div>                                         
+        </div>
+
+        <div class="row mt-2">
+            <div class="col-md-12 col-sm-12">
+                <span>
+                    <b class="text-main">Qual vai ser o principal meio de divulgação do seu negócio?</b> <em><b>{{ form.instance.get_divulgacao_display }}</b></em>
+                </span>
+            </div>                                        
+            <div class="col-md-12 col-sm-12 mt-2">
+                <span>
+                    <b class="text-main"> Divulgação Outro</b> <em><b>{{ form.instance.divulgacao_outra }}</b></em>
+                </span>
+            </div>                                         
+        </div>
+    </div>
+
+    <div class="bloco my-3">
+        <div class="row">
+            <div class="col-12 mb-2">
+                <h5>Dados de Mercado II </h5>
+            </div>
+            <div class="col-md-6 col-sm-12">
+                <span>
+                    <b class="text-main">Concorrente atendimento</b> <em><b>{{ form.instance.get_concorrente_atendimento_display }}</b></em>
+                </span>
+            </div>
+            <div class="col-md-6 col-sm-12">
+                <span>
+                    <b class="text-main">Concorrente qualidade</b> <em><b>{{ form.instance.concorrente_qualidade }}</b></em>
+                </span>
+            </div>
+        </div>
+        <div class="row mt-2">
+            <div class="col-md-6 col-sm-12">
+                <span>
+                    <b class="text-main">Concorrente localizacao</b> <em><b>{{ form.instance.get_concorrente_localizacao_display }}</b></em>
+                </span>
+            </div>
+            <div class="col-md-6 col-sm-12">
+                <span>
+                    <b class="text-main">Concorrente preco</b> <em><b>{{ form.instance.get_concorrente_preco_display }}</b></em>
+                </span>
+            </div>                                       
+        </div>
+        <div class="row mt-2">
+            <div class="col-md-6 col-sm-12">
+                <span>
+                    <b class="text-main">Concorrente forma pagamento</b> <em><b>{{ form.instance.concorrente_forma_pagamento }}</b></em>
+                </span>
+            </div>
+            <div class="col-md-6 col-sm-12">
+                <span>
+                    <b class="text-main">Concorrente forma pagamento outra</b> <em><b>{{ form.instance.concorrente_forma_pagamento }}</b></em>
+                </span>
+            </div>                                       
+        </div>
+        <div class="row mt-2">
+            <div class="col-md-6 col-sm-12">
+                <span>
+                    <b class="text-main">Concorrente forma propaganda</b> <em><b>{{ form.instance.get_concorrente_forma_propaganda_display }}</b></em>
+                </span>
+            </div>                                     
+        </div>
+    </div>
+
+    <div class="bloco my-3">
+        <h5>Investimentos </h5>
+        <div id="tableInvest">
+            {% include "app/extensionslist.html" with groups=groups_inv total_geral=total_geral_inv %}
+        </div>
+    </div>
+</section>

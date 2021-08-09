@@ -1,0 +1,238 @@
+{% extends './base.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% load bootstrap4 %}
+
+{% block content %}
+    <!--div container-->
+    <section class="container">
+        <div class="row">
+            <div class="col-sm-12 text-center mt-2">
+                <h2 class="text-white">Inscrições</h2>
+            </div>
+        </div>
+        <div class="formContent">
+            <div class="row">
+            {% if messages %}
+                {% for message in messages %}
+                    <h3> {{ message }} </h3>
+                {% endfor %}
+            {% else %}
+
+                <!-- MultiStep Form -->
+                <div class="card">
+                    <form id="msform" method="POST" class="post-form formMain formMainFisica form p4  
+                    formAtuaDados" enctype="multipart/form-data">
+                        <!-- progressbar -->
+                        <ul id="progressbar">
+                            <li class="active" id="account"><strong class="">Dados Pessoais <br>e sociais</strong></li>
+                            <li id="residenciais"><strong>Dados Residenciais</strong></li>
+                            <li id="financeiros"><strong>Dados Financeiros</strong></li>
+                            <li id="upload"><strong>Upload de documentos</strong></li>
+                            <li id="confirm"><strong>Finalize</strong></li>
+                        </ul> <!-- fieldsets -->
+                        <!--dados pessoais-->
+                        <fieldset>
+                            <div class="form-card">
+                                <h2 class="fs-title">Dados pessoais</h2>
+                                <p class>Preencha os campos obrigatórios <span class="text-danger">*</span></p> 
+                                <hr class="my-1">
+                                <!-- formulario pessal core-->
+                                    <div class="form-row">
+                                        <div class="col-sm-9 col-12">
+                                        {{ form.nome|as_crispy_field }}
+                                        </div>
+                                        <div class="col-sm-3 col-12">
+                                        {{ form.cpf|as_crispy_field }}
+                                        </div>
+                                        <div class="col-sm-3 col-12">
+                                            {{ form.data_nascimento|as_crispy_field }}
+                                        </div>
+                                        <div class="col-sm-9 col-12">
+                                            {{ form.nome_mae|as_crispy_field }}
+                                        </div>
+                                        <div class="col-sm-1 col-3">
+                                        {{ form.ddd|as_crispy_field }}
+                                        </div>
+                                        <div class="col-sm-3 col-9">
+                                        {{ form.telefone|as_crispy_field }}
+                                        </div>
+                                        <div class="col-sm-5 col-12">
+                                        {{ form.email|as_crispy_field }}
+                                        </div>
+                                        <div class="col-sm-12 col-9">
+                                        {{ form.link_video|as_crispy_field }}
+                                        </div>
+                                    </div>
+                                <!-- /formulario pessal core-->
+                            </div> 
+                            <input type="button" name="next" class="next action-button nxtButton" value="Próximo" />
+                        </fieldset>
+                        <!--/dados pessoais-->
+
+                        <!--dados residenciais-->
+                        <fieldset>
+                            <div class="form-card">
+                                <h2 class="fs-title">Dados Residenciais</h2> 
+                                <p class>Preencha os campos obrigatórios <span class="text-danger">*</span></p> 
+                                <hr class="my-1">
+                                <div class="form-row">
+                                    <div class="col-sm-3 col-12">
+                                    {{ form.tipo_logradouro|as_crispy_field }}
+                                    </div>
+                                    <div class="col-sm-7 col-12">
+                                    {{ form.logradouro|as_crispy_field }}
+                                    </div>
+                                    <div class="col-sm-2 col-4">
+                                        {{ form.numero|as_crispy_field }}
+                                    </div>
+                                    <div class="col-sm-4 col-8">
+                                        {{ form.complemento|as_crispy_field }}
+                                    </div>
+                                    <div class="col-sm-4 col-12">
+                                        {{ form.bairro|as_crispy_field }}
+                                    </div>
+                                    <div class="col-sm-4 col-12">
+                                        {{ form.cep|as_crispy_field }}
+                                    </div>
+                                </div>
+                            </div> 
+                            <input type="button" name="previous" class="previous action-button-previous" value="Anterior" /> 
+                            <input type="button" name="next" class="next action-button" value="Próximo" />
+                        </fieldset>
+                        <!--/dados residenciasi-->
+
+                        <!--dados financeiros-->
+                        <fieldset>
+                            <div class="form-card">
+                                <h2 class="fs-title">Dados Financeiros</h2> 
+                                <p class>Preencha os campos obrigatórios <span class="text-danger">*</span></p> 
+                                <hr class="my-1">
+                                <div class="form-row">
+                                    <div class="col-sm-4 col-12">
+                                        {{ form.banco|as_crispy_field }}
+                                    </div>
+                                    <br>
+                                    <div class="col-sm-2 col-12">
+                                        {{ form.operacao|as_crispy_field }}
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="col-sm-4 col-12">
+                                        {{ form.agencia|as_crispy_field }}
+                                    </div>                                                
+                                    <div class="col-sm-2 col-12">
+                                        {{ form.agencia_dv|as_crispy_field }}
+                                    </div>                                                
+                                </div>
+                                <div class="form-row">
+                                    <div class="col-sm-4 col-12">
+                                        {{ form.conta|as_crispy_field }}
+                                    </div>                                                
+                                    <div class="col-sm-2 col-12">
+                                        {{ form.conta_dv|as_crispy_field }}
+                                    </div>                                                
+                                </div>
+                                <div class="form-row">
+                                    <div class="col-sm-6 col-12">
+                                        {{ form.ganho_atual|as_crispy_field }}
+                                    </div>
+                                    <div class="col-sm-6 col-12">
+                                        {{ form.ganho_anterior|as_crispy_field }}
+                                    </div>
+                                    <div class="col-sm-6 col-12">
+                                        {{ form.ganho_atual|as_crispy_field }}
+                                    </div>
+                                    <div class="col-sm-12 col-12">
+                                        {{ form.renda_familia_atual|as_crispy_field }}
+                                    </div>
+                                </div>
+                            </div> 
+                            <input type="button" name="previous" class="previous action-button-previous" value="Anterior" /> 
+                            <input type="button" name="next" class="next action-button" value="Próximo" />
+                        </fieldset>
+                        <!--/dados financeiros-->
+
+                        <!--upload de documentos-->
+                        <fieldset>
+                            <div class="form-card">
+                                <h2 class="fs-title">Upload de documentos</h2> 
+                                <p class>Preencha os campos obrigatórios <span class="text-danger">*</span></p> 
+                                <hr class="my-1">
+                                <div class="form-row">
+                                    <div class="col-sm-6 col-12">
+                                        {{ form.file_rg_frente|as_crispy_field }}
+                                    </div>
+                                    <div class="col-sm-6 col-12">
+                                        {{ form.file_rg_verso|as_crispy_field }}
+                                    </div>                               
+                                    <div class="col-sm-12 col-12">
+                                        {{ form.file_cpf|as_crispy_field }}
+                                    </div>
+                                    <div class="col-sm-12 col-12">
+                                        {{ form.file_cend|as_crispy_field }}
+                                    </div>
+                                    <div class="col-sm-6 col-12">
+                                        {{ form.file_atividade_1 |as_crispy_field }}
+                                    </div>
+                                    <div class="col-sm-6 col-12">
+                                        {{ form.file_atividade_2 |as_crispy_field }}
+                                    </div>
+                                    <div class="col-sm-6 col-12">
+                                        {{ form.file_documento |as_crispy_field }}
+                                    </div>
+                                </div>
+                            </div> 
+                            <input type="button" name="previous" class="previous action-button-previous" 
+                            value="Anterior" /> 
+                            <input type="button" name="next" class="next action-button"
+                             value="Próximo" />
+                        </fieldset>
+                        <!--/upload de documentos-->
+
+                        <!--finalizar e enviar-->
+                        <fieldset>
+                            <div class="form-card">
+                                <h2 class="fs-title">Finalieza e enviar</h2> 
+                                <p class>Preencha os campos obrigatórios <span class="text-danger">*</span></p> 
+                                <hr class="my-1">
+                                <div class="form-row">
+                                    <div class="col-sm-12">
+                                        {{ form.atividade_profissional|as_crispy_field }}
+                                        <p class="mt-0 pt-0"><em><span class="caracteresAtv"></span></em></p>
+                                    </div>
+                                    <div class="col-sm-12">
+                                        {{ form.desc_ativ_profissional|as_crispy_field }}
+                                        <p class="mt-0 pt-0"><em><span class="caracteresDes"></span></em></p>
+                                    </div>   
+                                    <div class="col-sm-12">
+                                        {{ form.locais_trabalho|as_crispy_field }}
+                                    </div>
+                                    <div class="col-sm-12">
+                                        {{ form.situacao_atividade |as_crispy_field }}
+                                        <p class="mt-0 pt-0"><em><span class="caracteresSit"></span></em></p>
+                                    </div>
+                                    <div class="col-sm-12">
+                                        {{ form.info |as_crispy_field }}
+                                        <p class="mt-0 pt-0"><em><span class="caracteresInf"></span></em></p>
+                                    </div>
+                                </div>
+                            </div> 
+                            <input type="button" name="previous" class="previous action-button-previous" 
+                            value="Anterior" /> 
+                            <!--submit-->
+                            <button type="submit" class="btnEnviar btnSubmit">
+                                <img src="{% static '/img/botão_enviar.png' %}" width="175" alt="Botão enviar">
+                            </button>
+                            <!--/submit-->
+                        </fieldset>
+                        <!--/finalizar e enviar-->
+                    </form>
+                </div>
+                <!--/multisetp-->
+            {% endif %}
+            </div>
+        </div>
+    </section>
+    <!--/div container-->
+{% endblock %}

@@ -1,0 +1,79 @@
+{% extends './base.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% load bootstrap4 %}
+
+{% block content %}
+    <!--div container-->
+    <section class="">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12 text-center py-2">
+                    <a class="btn btn-primary" href="/">INÍCIO</a>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12 text-center mt-2">
+                    <h2 class="text-pink titleProponente">Entrega do chip<span class="socioName"></span></h2>
+                </div>
+            </div>
+        </div>
+            {% if form.non_field_errors %}
+                <h3 class="text-danger">{{ form.non_field_errors }}</h3>
+            {% endif %}
+            {% for field in form %}
+                {% if field.errors %}
+                    <div class="alert alert-danger alert-dismissible col-12 mx-1" role="alert">
+                        <div id="form_errors">
+                            {{ field.label }}
+                            <ul class="errorlist">
+                            {% for error in field.errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                            </ul>
+                        </div>
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                {% endif %}
+            {% endfor %}
+
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-primary alert-dismissible fade show alertCad" role="alert">
+                        <h4 class="text-msg text-center"> {{ message }} </h4>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <!-- block entrega-->
+                <div class="jumbotron bgMulher mx-4">
+                    {% if agendamento %}
+                    <h3 class="text-pink"><b>{{ agendamento.proposta.proponente.nome }}</b></h3>
+                    <h4 class="text-danger">
+                        <b>{{ agendamento.proposta.nome_empreendimento }}</b>
+                    </h4>
+                        Local de entrega: <b>{{ agendamento.local }}</b><br>
+                        Data do agendamento: <b>{{ agendamento.data }}</b><br>
+
+                        <p class="font-italic text-gray-800 mt-2">
+                            <i class="fa fa-info mr-2 text-pink" aria-hidden="true"></i>
+                            Ao comparecer no local o participante deve levar um documento com foto
+                        </p>
+                </div>
+                    {% else %}
+                        <div class="alert alert-primary alert-dismissible fade show alertCad" role="alert">
+                            <h4 class="text-msg text-center text-primary"> A entrega do seu chip ainda não foi agendada.</h4>
+                        </div>
+                    {% endif %}
+                    {% if entrega %}
+                        <div class="alert alert-success alert-dismissible fade show alertCad" role="alert">
+                            <h4 class="text-msg text-center"> Parabéns seu Chip entregue em {{ entrega.data }}</h4>
+                        </div>
+                    {% endif %}
+
+                <!--/block entrega-->   
+            {% endif %}
+    </section>
+    <!--/div container-->
+{% endblock %}

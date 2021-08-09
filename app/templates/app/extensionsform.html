@@ -1,0 +1,175 @@
+{% extends './base.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% load bootstrap4 %}
+
+{% block content %}
+    <!--div container 2-->
+    <section class="">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-sm-12 mt-2">            
+            {% if form.non_field_errors %}
+                    <h3 class="text-main">{{ form.non_field_errors }}</h3>
+            {% endif %}
+            {% for field in form %}
+                {% if field.errors %}
+                    <div class="alert alert-danger mx-1" role="alert">
+                        <div id="form_errors">
+                                {{ field.label }}
+                                <ul class="errorlist">
+                                {% for error in field.errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                                </ul>
+                        </div>
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                {% endif %}
+            {% endfor %}
+            {% if messages %}
+                {% for message in messages %}
+                {% if message.tags == "error" %}
+                    <div class="alert alert-danger alert-dismissible fade show alertCad" role="alert">
+                        <h4 class="text-msg text-center"><i class="fa fa-exclamation-triangle fa mr-2"></i> {{ message }} </h4>
+                    </div>
+                {% else %}
+                    <div class="alert alert-primary alert-dismissible fade show alertCad" role="alert">
+                        <h4 class="text-msg text-center"><i class="fa-check fa mr-2"></i>{{ message }} </h4>
+                    </div>
+                {% endif %}
+                {% endfor %}
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="row mt-2">
+          <div class="col-sm-12 text-center">
+              <a class="btn btn-primary text-center btnBackLast" href="/cadastro-proposta/?step={{ request.GET.step_back }}">
+                  <i class="icon-arrow-left-circle icons mr-2"></i>Voltar
+              </a>
+            <h4 class="text-main mt-3"> {{ label }} </h4>
+          </div>
+        </div>
+
+        <form method="POST" class="post-form mb-3" enctype="multipart/form-data">
+          {% csrf_token %}
+          <div class="form-row">                  
+            {% for obj in form %}
+              <div class="col-lg-3 col-md-4 col-sm-12">{{ obj | as_crispy_field }}</div>
+            {% endfor %}
+            {% if 'valor' in form.fields and 'quantidade' in form.fields %}
+            <div id="div_id-total" class="col-lg-3 col-md-4 col-sm-12">
+                <label for="" class="">
+                    <b>Valor Total (R$)</b>
+                </label>
+                <div class="">
+                  <input type="text" readonly name="id-total" class="form-control" id="id-total">
+                </div>
+            </div>
+            <!-- <script src="{% static '/vendors/js/jquery.min.js' %}"></script>
+            <script type="text/JavaScript">
+                $(document).ready(function(){
+                  $('#id_valor').keyup(set_total);
+                  $('#id_quantidade').keyup(set_total);
+                  
+                  function set_total(){
+                    var valor = parseFloat($('#id_valor').val().replace('.', '').replace(',', '.'));
+                    console.log(`${valor} valorfloat`);
+                    var qtde = parseInt($('#id_quantidade').val());
+                    if (valor && qtde) {
+                      var total = (valor * qtde).toFixed(2)
+                      console.log(`${valor} valorparse`);
+                      $("#id-total").val(total.toString().replace('.', ','));
+                      console.log(`${total} total`)
+                    }
+
+                    if(valor == "0"){
+                      $("#id-total").val("0,00");
+                    }
+                    
+                  }
+                });
+            </script> -->
+            {% endif %}
+          </div>
+          <div class="form-row">
+            <div class="col-sm-12 col-12">
+                <button type="submit" class="btnSubmit btn btn-success btnProjetoBlock" name="submitest">
+                    <span class="txtHideEviando">Adicionar {{ nome }}</span>
+                    <span class="txtEnviando">...</span>
+                    <span class="txtEnviando">
+                        <img class="img" alt="" width="25"
+                        src="{% static '/img/loading.gif' %}">
+                    </span>
+                </button>
+            </div>
+          </div>
+        </form>
+        {% if groups %}
+          {% for group in groups %}
+          <div class="" style="display:flex; justify-content: space-between;">
+              <h5><b>{{ group.label }} </b></h5>
+              <h5 class="">R$ {{ group.total }} ({{ group.perc }}%)</h5>
+          </div>
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                {% for fields in group.exts.0.get_verbose_name_fields %}
+                  <th> {{ fields }} </th>
+                {% endfor %}
+                <th> Valor Total (Saldo) </th>
+                <th>Excluir</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for obj in group.exts %}
+              <tr>
+                {% for value in obj.get_values %}
+                  <td> {{ value|default_if_none:"-" }} </td>
+                {% endfor %}
+                  <td> {{ obj.valor_total }} </td>
+<!--                  {% if obj.valor_total %}-->
+<!--                  <td> {{ obj.valor_total }} </td>-->
+<!--                  {% endif %}-->
+                <td><a href="{% url 'delete_investimento' obj.id %}"><i class="fa fa-trash text-danger"></i></a></td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          {% endfor %}
+          <p class="text-main" style="display:flex; justify-content: space-between; font-size:26px">
+              TOTAL
+              <b>R$ {{ total_geral }}</b>
+          </p>
+          {% elif objects %}
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  {% for fields in objects.0.get_verbose_name_fields %}
+                    <th> {{ fields }} </th>
+                  {% endfor %}
+                  <th>Ações</th>
+                </tr>
+              </thead>
+              <tbody>
+              {% for obj in objects %}
+              <tr>
+                {% for value in obj.get_values %}
+                  <td> {{ value }} </td>
+                {% endfor %}
+                <td><a href="{% url delete_url obj.id %}"><i class="fa fa-trash text-danger"></i></a></td>
+              </tr>
+              {% endfor %}
+            </tbody>
+            </table>
+          {% else %}
+          <p>Nenhum {{ nome }} cadastrado</p>
+        {% endif %}
+      </div>
+    </section>
+    <!--/div container-->
+{% endblock %}
+

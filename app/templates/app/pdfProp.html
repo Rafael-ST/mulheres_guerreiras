@@ -1,0 +1,352 @@
+{% load static %}
+<style>
+        .onlyPrint{
+            display: none;
+        }
+
+        .onlyWeb{
+            display: block;
+        }
+@media print {
+    @import url("https://fonts.googleapis.com/css?family=Pacifico|Source+Sans+Pro:400,700");
+        @page {
+            margin: 1.25cm;
+        }
+    html {
+      color: #14213d;
+      font-family: Source Sans Pro;
+      font-size: 11pt;
+      line-height: 1.6; }
+      html body {
+        margin: 0; }
+      html h5 {
+        font-family: Pacifico;
+        font-size: 16pt;
+        margin: 0; }
+
+        .onlyPrint{
+            display: block;
+        }
+
+        .onlyWeb{
+            display: none;
+        }
+
+        #initial{
+            display: bloco;
+        }
+
+        #initial img {
+            width: 4.9cm;
+            margin: 0.25cm auto;
+        }
+
+
+        .sectionBloco .bloco{
+          background: #ffe3fe;
+          padding: 10px;
+           margin-bottom: 0.25cm;
+        }
+
+        .sectionBloco .bloco em b{
+            font-size: 11pt;
+            font-weight: 500;
+            color: #92278f ;
+        }
+    
+        .formMainFisica figure.figureAlt a img{
+            height: 225px;
+            width: 100%;
+        }
+
+        .text-pink{
+            font-weight: 300;
+        }
+
+        .br{
+            border: 1px solid blue;
+        }
+
+        .infoSection{
+            clear: both;
+        }
+
+        .textPink{
+            color: #92278f ;
+        }
+}
+
+</style>
+
+<div>
+    <div id="initial" class="onlyPrint">
+        <img class="img" src="https://www.fortaleza.ce.gov.br/templates/pmf/images/logo-portal-prefeitura-fortaleza.png"  
+        alt="Fortaleza">
+        <h3 class="textPink bloco" style="position: absolute; top:0; right: 0;">Nossas guerreiras</h3> 
+    </div>
+</div>
+
+<div class="onlyPrint infoSection">
+
+        <em><b>{{projeto.nome_empreendimento}}</b></em>      
+        <span style="position: absolute; right: 0;">
+            Data de emissão:<em><b>{% now "SHORT_DATETIME_FORMAT" %}</b></em>
+        </span>
+</div>
+<section class="sectionBloco">
+    <div class="bloco my-3">
+        <div class="row">
+            <div class="col-12 mb-2">
+                <h5>Dados do Pessoais</h5>
+            </div>
+            <div class="col-md-6 col-sm-12">
+                <span>
+                    <b class="text-pink">Nome:</b> <em><b>{{ form.instance.nome }}</b></em>
+                </span>
+            </div>
+            <div class="col-md-6 col-sm-12">
+                <span>
+                    <b class="text-pink">Data de nascimento:</b> <em><b>{{ form.instance.data_nascimento }}</b></em>
+                </span>
+            </div>
+        </div>
+        <div class="row mt-2">
+            <div class="col-md-4 col-sm-12">
+                <span>
+                    <b class="text-pink">CPF:</b> <em><b>{{ form.instance.cpf }}</b></em>
+                </span>
+            </div>
+            <div class="col-md-4 col-sm-12">
+                <span>
+                    <b class="text-pink">RG:</b> <em><b>{{ form.instance.rg }}</b></em>
+                </span>
+            </div>
+            <div class="col-md-4 col-sm-12">
+                <span>
+                    <b class="text-pink">Sexo:</b> <em><b>{{ form.instance.sexo }}</b></em>
+                </span>
+            </div>                                      
+        </div>
+        <div class="row mt-2">
+            <div class="col-md-6 col-sm-12">
+                <span>
+                    <b class="text-pink">Telefone 1:</b> <em><b>({{ form.instance.ddd_1 }}) {{ form.instance.telefone_1 }}</b></em>
+                </span>
+            </div>
+            <div class="col-md-6 col-sm-12">
+                <span>
+                    <b class="text-pink">Telefone 2:</b> <em><b>({{ form.instance.ddd_2 }}) {{ form.instance.telefone_2 }}</b></em>
+                </span>
+            </div>   
+            <dic class="col-md-4 mt-2">
+                <b class="text-pink">Email:</b> <em><b>({{ form.instance.email}})</b></em>
+            </dic>                                  
+        </div>
+        <div class="row mt-2">
+            <div class="col-md-6 col-sm-12">
+                <span>
+                    <b class="text-pink">Nome do Pai:</b> <em><b>{{ form.instance.nome_pai }}</b></em>
+                </span>
+            </div>
+            <div class="col-md-6 col-sm-12">
+                <span>
+                    <b class="text-pink">Nome da Mãe:</b> <em><b>{{ form.instance.nome_mae }}</b></em>
+                </span>
+            </div>                                      
+        </div>
+
+        <div class="row mt-2">
+            <div class="col-md-6 col-sm-12">
+                <span>
+                    <b class="text-pink">Situação conjugal:</b> <em><b>{{ form.instance.situacao_conjugal }}</b></em>
+                </span>
+            </div>
+            <div class="col-md-6 col-sm-12">
+                <span>
+                    <b class="text-pink">Quantidade de filhos:</b> <em><b>{{ form.instance.qtde_filhos }}</b></em>
+                </span>
+            </div>                                         
+        </div>
+    </div>
+
+    <div class="bloco my-3">
+        <div class="row">
+            <div class="col-12">
+                <h5>Dados do Residenciais</h5>
+            </div>
+            <div class="col-md-9 col-sm-12">
+                <span>
+                    <b class="text-pink">Endereço:</b> <em><b class="text-capitalize"><span class="text-lowercase">{{ form.instance.get_tipo_logradouro_display }}</span> {{ form.instance.logradouro }}</b></em>
+                </span>
+            </div>
+            <div class="col-md-3 col-sm-12">
+                <span>
+                    <b class="text-pink">Nº:</b> <em><b>{{ form.instance.numero }}</b></em>
+                </span>
+            </div>                                         
+        </div>
+        <div class="row mt-2">
+            <div class="col-md-4 col-sm-12">
+                <span>
+                    <b class="text-pink">Complemento:</b> <em><b>{{ form.instance.complemento }}</b></em>
+                </span>
+            </div>                                         
+            <div class="col-md-4 col-sm-12">
+                <span>
+                    <b class="text-pink">Bairro:</b> <em><b>{{ form.instance.bairro }}</b></em>
+                </span>
+            </div>                                         
+            <div class="col-md-4 col-sm-12">
+                <span>
+                    <b class="text-pink">CEP:</b> <em><b>{{ form.instance.cep }}</b></em>
+                </span>
+            </div>                                         
+        </div>
+    </div>
+
+    <div class="bloco my-3">
+        <div class="row">
+            <div class="col-12 mb-2">
+                <h5>Dados Socioeconômicos </h5>
+            </div>
+            <div class="col-md-6 col-sm-12">
+                <span>
+                    <b class="text-pink">Deficiência:</b> <em><b>{{ form.instance.deficiencia }}</b></em>
+                </span>
+            </div>
+            <div class="col-md-6 col-sm-12">
+                <span>
+                    <b class="text-pink">Outra:</b> <em><b>{{ form.instance.deficiencia_outro }}</b></em>
+                </span>
+            </div>
+        </div>
+        <div class="row mt-2">
+            <div class="col-md-6 col-sm-12">
+                <span>
+                    <b class="text-pink">Escolaridade:</b> <em><b>{{ form.instance.get_escolaridade_display }}</b></em>
+                </span>
+            </div>
+            <div class="col-md-6 col-sm-12">
+                <span>
+                    <b class="text-pink">
+                        Quantas pessoas residem (moram) com você?</b> <em><b>{{ form.instance.get_residentes_display }}</b></em>
+                </span>
+            </div>
+        </div>
+        <div class="row mt-2">
+            <div class="col-md-6 col-sm-12">
+                <span>
+                    <b class="text-pink">Trabalha atualmente?</b> <em><b>{{ form.instance.get_trabalha_atualmente_display }}</b></em>
+                </span>
+            </div>
+            <div class="col-md-6 col-sm-12">
+                <span>
+                    <b class="text-pink">  Renda individual?</b> <em><b>{{ form.instance.get_renda_display }}</b></em>
+                </span>
+            </div>
+        </div>
+        <div class="row mt-2">
+            <div class="col-md-6 col-sm-12">
+                <span>
+                    <b class="text-pink">Você recebe algum benefício social do Governo?</b> <em><b>{{ form.instance.get_recebe_beneficio_display }}</b></em>
+                </span>
+            </div>
+            <div class="col-md-6 col-sm-12">
+                <span>
+                    <b class="text-pink"> Experiência profissional?</b> <em><b>{{ form.instance.get_experiencia_display }}</b></em>
+                </span>
+            </div>
+        </div>
+        <div class="row mt-2">
+            <div class="col-md-4 col-sm-12">
+                <span>
+                    <b class="text-pink">Participou de curso gerencial?</b> <em><b>{{ form.instance.get_participou_curso_gerencial_display }}</b></em>
+                </span>
+            </div>
+            <div class="col-md-4 col-sm-12">
+                <span>
+                    <b class="text-pink"> Participou de curso técnico?</b> <em><b>{{ form.instance.get_participou_curso_tecnico_display }}</b></em>
+                </span>
+            </div>
+            <div class="col-md-4 col-sm-12">
+                <span>
+                    <b class="text-pink"> Participou de curso técnico?</b> <em><b>{{ form.instance.get_necessita_curso_tecnico_display }}</b></em>
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <div class="bloco my-3">
+        <div class="row">
+            <div class="col-12 mb-2">
+                <h5>Documentos enviados </h5>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="col-12">
+                <p>Documentos enviados</p>
+            </div>
+            {% if form.instance.file_rg_frente %}
+            <div class="col-sm-3 col-6">
+                <figure class="figureAlt">
+                    <a href="{{ form.instance.file_rg_frente.url }}" class="figLInk" target="_blank">
+                        <img src="{{ form.instance.file_rg_frente.url }}" class="img-thumbnail" alt="rg frente documento">
+                    </a>
+                    <figcaption>
+                        <a href="{{ form.instance.file_rg_frente.url }}" target="_blank">Frente do RG </a>
+                    </figcaption>
+                </figure>
+            </div>
+            {% endif %}
+            {% if form.instance.file_rg_verso %}
+            <div class="col-sm-3 col-6">
+                <figure class="figureAlt">
+                    <a href="{{ form.instance.file_rg_verso.url }}"  class="figLInk"  target="_blank">
+                        <img src="{{ form.instance.file_rg_verso.url }}" class="img-thumbnail" alt="rg verso documento">
+                    </a>
+                    <figcaption>
+                        <a href="{{ form.instance.file_rg_verso.url }}" target="_blank">Verso do RG </a>
+                    </figcaption>
+                </figure>
+            </div>
+            {% endif %}
+            {% if form.instance.file_cpf %}
+            <div class="col-sm-3 col-6">
+                <figure class="figureAlt">
+                    <a href="{{ form.instance.file_cpf.url }}" title="cpf" class="figLInk"  class="figLInk"  target="_blank">
+                        <img src="{{ form.instance.file_cpf.url }}" class="img-thumbnail" alt="CPF">
+                    </a>
+                    <figcaption>
+                        <a href="{{ form.instance.file_cpf.url }}" target="_blank">CPF </a>
+                    </figcaption>
+                </figure>
+            </div>
+            {% endif %}
+            {% if form.instance.file_comp_endereco %}
+            <div class="col-sm-3 col-6">
+                <figure class="figureAlt">
+                    <a href="{{ form.instance.file_comp_endereco.url }}"  class="figLInk"  title="cpf" target="_blank">
+                        <img src="{{ form.instance.file_comp_endereco.url }}" class="img-thumbnail" alt="Comprovante de endereço">
+                    </a>
+                    <figcaption>
+                        <a href="{{ form.instance.file_comp_endereco.url }}" target="_blank">Comprovante de endereço </a>
+                    </figcaption>
+                </figure>
+            </div>
+            {% endif %}
+            {% if form.instance.file_comp_endereco %}
+            <div class="col-sm-3 col-6">
+                <figure class="figureAlt">
+                    <a href="{{ form.instance.file_comp_endereco.url }}" class="figLInk"  title="cpf" target="_blank">
+                        <img src="{{ form.instance.file_comp_endereco.url }}" class="img-thumbnail" alt="Comprovante de endereço">
+                    </a>
+                    <figcaption>
+                        <a href="{{ form.instance.file_comp_endereco.url }}" target="_blank">Comprovante de endereço </a>
+                    </figcaption>
+                </figure>
+            </div>
+            {% endif %}
+        </div> 
+    </div>
+</section>
+            

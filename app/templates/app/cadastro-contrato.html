@@ -1,0 +1,14 @@
+{% extends './base.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% load bootstrap4 %}
+{% load configs %}
+
+{% block content %}
+
+    <form method="POST" enctype="multipart/form-data">
+        {{ form }}
+        <button type="submit">Submeter</button>
+    </form>
+
+{% endblock %}

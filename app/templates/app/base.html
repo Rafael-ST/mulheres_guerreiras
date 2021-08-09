@@ -1,0 +1,44 @@
+{% load static %}
+{% load crispy_forms_tags %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <link rel="shortcut icon" href="{% static 'img/favicon.ico' %}" type="image/x-icon">
+    <link rel="icon" href="{% static 'img/favicon.ico' %}" type="image/x-icon">
+    {% load bootstrap4 %}
+    <!--library django select2 css-->
+    {{ form.media.css }}
+    <!--/library django select2-->
+    <link rel="stylesheet" href="{% static 'vendors/css/font-awesome.css' %}">
+    <link rel="stylesheet" href="{% static 'vendors/css/simple-line.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/estilo.css' %}">
+</head>
+<body class="app">
+  <div class="app-body">
+    <!-- Main content -->
+    <main class="main">
+      <div class="content">
+        <!--content-->
+        {% block content %}
+        {% endblock %}
+        <!--/content-->
+        </div> 
+    </main>
+    <!--/ Main content -->
+  </div>
+</body>
+{%block javascript %}
+    {% bootstrap_javascript jquery='full' %}
+    <!--library django select2 js-->
+    {{ form.media.js }}
+    <!--/library django select2-->
+    <script type="text/javascript" src="{% static 'vendors/js/jquery.mask.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'vendors/js/jquery.maskMoney.js' %}"></script>
+    <script type="text/javascript" src="{% static '/js/script.js' %}"></script>
+{%endblock %}
+</html>
+    

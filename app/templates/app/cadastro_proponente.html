@@ -1,0 +1,377 @@
+{% extends './base.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% load bootstrap4 %}
+
+{% block content %}
+    <!--div container-->
+    <section class="">
+        <div class="container-fluid">
+            <div class="row justify-content-center">
+                <div class="col-md-12 text-center mb-3">
+                    <a class="btn btn-primary" href="/">Início</a>
+                    
+                    {% if form.instance.is_ready_to_send %}
+                    <a class="btn btn-pink btnProjeto"  href="/submeter-proponente/">
+                        <span class="txtHideEviando">
+                            <i class="fa fa-paper-plane text-white"></i> 
+                            Enviar Dados
+                        </span>
+                    </a>
+                    <span class="txtEnviando">Enviando...</span>
+                    <span class="txtEnviando">
+                        <img class="img" alt="" width="25"
+                            src="{% static '/img/loading.gif' %}" />
+                    </span>
+                   {% endif %}                    
+                </div>
+            </div>
+        </div>        
+        <div class="container-fluid">
+            <div class="alert bg-teal-light" role="alert">
+                <p class="font-italic text-gray-800 mt-1">
+                    <i class="fa fa-exclamation-triangle text-yellow fa-2x" aria-hidden="true"></i> 
+                    <b class="text-gray-800">Importante</b>
+                    Após finalizar esse cadastro, 
+                    você deve voltar ao painel principal e cadastrar sua proposta e finalizar sua inscrição.
+                </p>
+                <p class="font-italic text-gray-800 mt-1">
+                    <i class="fa fa-exclamation-triangle text-yellow fa-2x" aria-hidden="true"></i> 
+                    <b class="text-gray-800">Importante</b>  Você pode a qualquer momento salvar seu cadastro e continuar depois.
+                </p>
+                <p class="mt-2 font-italic">
+                    <i class="fa fa-exclamation-triangle text-yellow fa-2x" aria-hidden="true"></i> 
+                    <b class="text-gray-800">Importante</b>
+                    <span class="text-gray-700">Você pode efetuar o download do cadastro do proponente.</span>
+                    <a class="text-danger" target="_blank" href="{% url 'export_proposta_pdf_prop' %}">
+                        <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
+                        Download 
+                    </a>
+                </p>
+            </div>
+            {% if projeto %}
+                {% if not projeto.submetido %}
+                    {% if projeto.proponente.get_required_fields_none %}
+                    <div class="alert alert-warning alertCad" role="alert">
+                        <p class="text-msg font-italic mb-0">
+                            <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+                            <b>Atenção</b> Ainda existem campos obrigatórios a serem preenchidos
+                            para a proponete <b>{{ projeto.socia_gestora.nome }}</b>:
+                            {% for field in projeto.proponente.get_required_fields_none %}
+                            <a>{{ field }},</a>
+                            {% endfor %}
+                        </p>
+                    </div>
+                    {% endif %}
+                {% endif %}
+            {% endif %}
+
+            <div class="row">
+                <div class="col-sm-12 text-center mt-2">
+                    <h2 class="text-pink titleProponente">Cadastro Proponente</h2>
+                </div>
+            </div>
+        </div>
+            {% if form.non_field_errors %}
+                <h3 class="text-danger">{{ form.non_field_errors }}</h3>
+            {% endif %}
+            {% for field in form %}
+                {% if field.errors %}
+                    <div class="alert alert-danger alert-dismissible col-12 mx-1" role="alert">
+                        <div id="form_errors">
+                            {{ field.label }}
+                            <ul class="errorlist">
+                            {% for error in field.errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                            </ul>
+                        </div>
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                {% endif %}
+            {% endfor %}
+
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-primary alert-dismissible fade show alertCad" role="alert">
+                        <h4 class="text-msg text-center"> {{ message }} </h4>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <!-- MultiStep Form -->
+                <div class="card card-form">
+                    <form id="msform" method="POST" class="post-form formMain formMainFisica form p4  
+                    formAtuaDados" enctype="multipart/form-data">
+                    {% csrf_token %}
+                        <!-- progressbar -->
+                        <ul id="progressbar" class="">
+
+                        </ul> 
+                        <!-- fieldsets -->
+
+                        <!--dados pessoais-->
+                        <fieldset>
+                            <div class="form-card">
+                                <h2 class="fs-title">Dados pessoais</h2>
+                                <hr class="my-1">
+                                <!-- formulario pessal core-->
+                                    <div class="form-row">
+                                        <div class="col-sm-9 col-12">
+                                            {{ form.nome|as_crispy_field }}
+                                        </div>
+                                        <div class="col-sm-3 col-12 mb-0">
+                                            {{ form.data_nascimento|as_crispy_field }}
+                                        </div>
+                                        <div class="col-sm-3 col-12">
+                                            {{ form.cpf|as_crispy_field }}
+                                        </div>
+                                        <div class="col-sm-3 col-12">
+                                            {{ form.rg|as_crispy_field }}
+                                        </div>
+                                        <div class="col-sm-3 col-12">
+                                            {{ form.sexo|as_crispy_field }}
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="col-sm-1 col-2">
+                                            {{ form.ddd_1|as_crispy_field }}
+                                        </div>
+                                        <div class="col-sm-3 col-10">
+                                            {{ form.telefone_1|as_crispy_field }}
+                                        </div>
+                                        <div class="col-sm-1 col-2">
+                                            {{ form.ddd_2|as_crispy_field }}
+                                        </div>
+                                        <div class="col-sm-3 col-10">
+                                            {{ form.telefone_2|as_crispy_field }}
+                                        </div>
+                                        <div class="col-sm-3 col-12">
+                                            {{ form.email|as_crispy_field }}
+                                        </div>
+                                    </div>   
+                                    <div class="form-row">
+                                        <div class="col-sm-9 col-12">
+                                            {{ form.nome_pai|as_crispy_field }}
+                                        </div>
+                                        <div class="col-sm-9 col-12">
+                                            {{ form.nome_mae|as_crispy_field }}
+                                        </div>  
+                                        <div class="col-sm-4 col-12">
+                                            {{ form.situacao_conjugal|as_crispy_field }}
+                                        </div> 
+                                        <div class="col-sm-4 col-12">
+                                            {{ form.qtde_filhos|as_crispy_field }}
+                                        </div>                                                                               
+                                    </div>                                 
+                                <!-- /formulario pessal core-->
+                            </div> 
+
+                        </fieldset>
+                        <!--/dados pessoais-->
+
+                        <!--dados residenciais-->
+                        <fieldset>
+                            <div class="form-card">
+                                <h2 class="fs-title">Dados Residenciais</h2> 
+                                <hr class="my-1">
+                                <div class="form-row">
+                                    <div class="col-sm-2 col-4">
+                                        {{ form.tipo_logradouro|as_crispy_field }}
+                                    </div>
+                                    <div class="col-sm-8 col-12">
+                                        {{ form.logradouro|as_crispy_field }}
+                                    </div>
+                                    <div class="col-sm-2 col-4">
+                                        {{ form.numero|as_crispy_field }}
+                                    </div>
+                                    <div class="col-sm-4 col-8">
+                                        {{ form.complemento|as_crispy_field }}
+                                    </div>
+                                    <div class="col-sm-4 col-12">
+                                        {{ form.bairro|as_crispy_field }}
+                                    </div>
+                                    <div class="col-sm-4 col-12">
+                                        {{ form.cep|as_crispy_field }}
+                                    </div>
+                                </div>                                
+                            </div> 
+                        </fieldset>
+                        <!--/dados residenciasi-->
+
+                        <!--dados financeiros-->
+                        <fieldset>
+                            <div class="form-card">
+                                <h2 class="fs-title">Dados Socioeconômicos</h2> 
+                                <hr class="my-1">
+                                <div class="form-row">
+                                    <div class="col-sm-6 col-12 divDeficiencia">
+                                        <label for=""> Você possui alguma deficiência ? </label>
+                                        <br>
+                                        <div class="form-check form-check-inline deficienciaProp">
+                                            <label class="customradio" for="deficienciaButton1">
+                                                <span class="radiotextsty">Sim</span>
+                                                <input class="form-check-input"  type="radio" 
+                                                name="deficienciaRadio" id="deficienciaButton1" value="Sim">
+                                                <span class="checkmark"></span>
+                                            </label>
+                                        </div>
+                                        <div class="form-check form-check-inline deficienciaProp">
+                                            <label class="customradio" for="deficienciaButton2">
+                                                <span class="radiotextsty">Não</span>
+                                                <input class="form-check-input"  type="radio" 
+                                                name="deficienciaRadio" id="deficienciaButton2" value="Não">
+                                                <span class="checkmark"></span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="col-sm-4 col-12">
+                                        {{ form.deficiencia |as_crispy_field }}
+                                    </div>
+                                    <div class="col-sm-4 col-12">
+                                        {{ form.deficiencia_outro|as_crispy_field }}
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="col-sm-6 col-12">
+                                        {{ form.escolaridade|as_crispy_field }}
+                                    </div>
+                                    <div class="col-sm-5 col-12">
+                                        {{ form.residentes|as_crispy_field }}
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="col-xl-4 col-lg-6 col-12">
+                                        {{ form.trabalha_atualmente|as_crispy_field }}
+                                    </div>
+                                    <div class="col-xl-4 col-lg-6 col-12">
+                                        {{ form.renda|as_crispy_field }}
+                                    </div>
+                                    <div class="col-xl-4 col-lg-6 col-12">
+                                        {{ form.recebe_beneficio|as_crispy_field }}
+                                    </div>
+                                    <div class="col-xl-4 col-lg-6 col-12">
+                                        {{ form.experiencia|as_crispy_field }}
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="col-lg-3 col-12">
+                                        {{ form.participou_curso_gerencial |as_crispy_field }}
+                                    </div>
+                                    <div class="col-lg-3 col-12">
+                                        {{ form.participou_curso_tecnico|as_crispy_field }}
+                                    </div>
+                                    <div class="col-lg-3 col-12">
+                                        {{ form.necessita_curso_tecnico|as_crispy_field }}
+                                    </div>
+                                </div>
+                            </div> 
+                        </fieldset>
+                        <!--/dados financeiros-->
+
+                        <!--upload de documentos-->
+                        <fieldset>
+                            <div class="form-card">
+                                <h2 class="fs-title">Submissão de documentos</h2> 
+                                <hr class="my-1">
+                                <div class="form-row">
+                                    <div class="col-sm-6 col-12">
+                                        {{ form.file_rg_frente|as_crispy_field }}
+                                        <p></p>
+                                    </div>
+                                    <div class="col-sm-6 col-12">
+                                        {{ form.file_rg_verso|as_crispy_field }}
+                                    </div>                               
+                                    <div class="col-sm-6 col-12">
+                                        {{ form.file_cpf|as_crispy_field }}
+                                    </div>
+                                    <div class="col-sm-6 col-12">
+                                        {{ form.file_comp_endereco|as_crispy_field }}
+                                    </div>
+                                    <div class="col-sm-6 col-12">
+                                        {{ form.file_dec_endereco|as_crispy_field }}
+                                    </div>
+                                    <div class="col-sm-6 col-12">
+                                        {{ form.file_livre|as_crispy_field }}
+                                    </div> 
+                                </div>
+                            </div> 
+
+                        </fieldset>
+                        <!--/upload de documentos-->                        
+      
+                        <!--finalizar e enviar-->
+                        <fieldset>
+                            <div class="form-card">
+                                <h2 class="fs-title">Finalizar e salvar
+                                    <a class="text-danger" target="_blank" href="{% url 'export_proposta_pdf_prop' %}">
+                                        <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
+                                    </a>
+                                </h2> 
+                                <hr class="my-1">
+                                <!-- include dados proponente pdf-->
+                                {% include "app/pdfProp.html" %}
+                                <!--/include dados proponente pdf-->
+                            </div> 
+
+                            <!--/submit-->
+                        </fieldset>
+                        <!--finalizar e enviar-->
+                        
+                        <!--/finalizar e enviar-->
+                        {% if form.instance.is_ready_to_send %}
+                        <a class="btn btn-pink btnProjeto btnFloat"  href="/submeter-proponente/">
+                            <span class="txtHideEviando">
+                                <i class="fa fa-paper-plane text-white"></i> 
+                                Enviar Dados
+                            </span>
+                        </a>
+                        <span class="txtEnviando">Enviando...</span>
+                        <span class="txtEnviando">
+                            <img class="img" alt="" width="25"
+                                src="{% static '/img/loading.gif' %}" />
+                        </span>
+                       {% endif %}
+
+                       {% if not form.instance.is_ready_to_send %}                       
+                        <button type="submit" class="btnSubmit btn btn-success btnFloat">
+                            <span class="txtHideEviando"><i class="fa fa-paper-plane mr-2"></i>
+                            <span class="salvarTextFloat">Salvar progresso</span></span>
+                            <span class="txtEnviando">Salvando...</span>
+                            <span class="txtEnviando">
+                                <img class="img" alt="" width="25"
+                                src="{% static '/img/loading.gif' %}">
+                            </span>
+                        </button>
+                       {% endif %}
+
+                        {% if not form.instance.submissao %}
+
+                            <input type="hidden" id="step" name="step" value="{{ request.GET.step }}">
+                            {% if request.GET.step|add:"0" > 0 %}
+                            <button type="submit" class="btnSubmit btn btn-warning" name="previousstep">
+                                Anterior
+                            </button>
+                            {% endif %}
+
+                            {% if request.GET.step|add:"0" < 4 %}
+                            <button type="submit" class="btnSubmit btn btn-teal-300" name="nextstep">
+                                <span class="txtHideEviando">Próximo</span>
+                                <span class="txtEnviando">Salvando...</span>
+                                <span class="txtEnviando">
+                                    <img class="img" alt="" width="25"
+                                    src="{% static '/img/loading.gif' %}">
+                                </span>
+                            </button>
+                            {% endif %}
+                        {% endif %}
+                    </form>
+                </div>
+                <!--/multisetp-->   
+            {% endif %}
+    </section>
+    <!--/div container-->
+{% endblock %}

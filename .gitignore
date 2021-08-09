@@ -1,0 +1,10 @@
+.idea/
+*.pyc
+media/
+db/
+venv/
+db/
+db.sqlite3
+.env
+
+app/migrations/

@@ -1,0 +1,430 @@
+{% extends './base.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% load bootstrap4 %}
+{% load configs %}
+
+{% block content %}
+    <!--div container-->
+    {% get_config_flag "cadastroprojeto" as cadastroprojeto_is_active %}
+    {% get_config_flag "entregachip" as entregachip_is_active %}
+    {% get_config_flag "inscricaocapacitacao" as inscricaocapacitacao_is_active %}
+    {% get_config_flag "contrato" as contrato_is_active %}
+
+    <section class="">
+        {% if messages %}
+            {% for message in messages %}
+                {% if message.tags == "error" %}
+                    <div class="alert alert-danger alert-dismissible fade show alertCad" role="alert">
+                        <h4 class="text-msg text-center"><i class="fa fa-exclamation-triangle fa mr-2"></i> {{ message }} </h4>
+                    </div>
+                {% else %}
+                    <div class="alert alert-primary alert-dismissible fade show alertCad" role="alert">
+                        <h4 class="text-msg text-center"><i class="fa-check fa mr-2"></i>{{ message }} </h4>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+        {% if projeto %}
+            <!-- <a class="btn btn-primary"  href="/cadastro-proponente/?m=sociag">Cadastro da Sócia Gestora</a><br>{{projeto.socia_gestora.nome}}<br><br>
+            <a class="btn btn-primary"  href="/cadastro-proponente/?m=socia1">Cadastro do Sócio(a) 1</a><br>{{projeto.socio_1.nome}}<br><br>
+            <a class="btn btn-primary"  href="/cadastro-proponente/?m=socia2">Cadastro do Sócio(a) 2</a><br>{{projeto.socio_2.nome}}<br><br>
+            <a class="btn btn-primary"  href="/cadastro-projeto/">Cadastro do Projeto </a><br>{{ projeto.nome_empreendimento }}<br><br> -->
+            <br>
+        {% endif %}
+        {% if projeto %}
+        <div class="">
+            <h2 class="text-center">Proposta: <b class="text-main">{{ projeto.nome_empreendimento }}</b></h2>
+            <div class="container-fluid">
+                <div class="row appcards justify-content-md-center">
+                    <div class="col-sm-12">
+                        {% if not projeto.submetido %}
+                                {% if projeto.get_required_fields_none %}
+                                <div class="alert alert-warning alertCad" role="alert">
+                                    <p class="text-msg font-italic mb-0">
+                                        <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+                                        <b>Atenção</b> Ainda existem campos obrigatórios a serem preenchidos
+                                        do seu empreendimento <b>{{ projeto.nome_empreendimento }}</b>:
+                                        {% for field in projeto.get_required_fields_none %}
+                                        <a>{{ field }},</a>
+                                        {% endfor %}
+                                    </p>
+                                </div>
+                                {% endif %}
+                                {% if projeto.proponente.get_required_fields_none %}
+                                <div class="alert alert-warning alertCad" role="alert">
+                                    <p class="text-msg font-italic mb-0">
+                                        <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+                                        <b>Atenção</b> Ainda existem campos obrigatórios a serem preenchidos
+                                        para a proponete <b>{{ projeto.socia_gestora.nome }}</b>:
+                                        {% for field in projeto.proponente.get_required_fields_none %}
+                                        <a>{{ field }},</a>
+                                        {% endfor %}
+                                    </p>
+                                </div>
+                                {% endif %}
+                                {% if projeto.socio_1 %}
+                                    {% if projeto.socio_1.get_required_fields_none %}
+                                    <div class="alert alert-danger alertCad" role="alert">
+                                        <p class="text-msg font-italic">
+                                            <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+                                            <b>Atenção</b> Ainda existem campos obrigatórios a
+                                            serem preenchidos para o(a) sócio(a) <b>{{ projeto.socio_1.nome }}</b>:
+                                            {% for field in projeto.socio_1.get_required_fields_none %}
+                                            <a>{{ field }},</a>
+                                            {% endfor %}
+                                        </p>
+                                    </div>
+                                   {% endif %}
+                               {% endif %}
+                                {% if projeto.socio_2 %}
+                                    {% if projeto.socio_2.get_required_fields_none %}
+                                    <div class="alert alert-danger alertCad" role="alert">
+                                        <p class="text-msg font-italic">
+                                            <i class="fa fa-exclamation-triangle fa-2x" aria-hidden="true"></i>
+                                            <b>Atenção</b> Ainda existem campos a serem preenchidos para o(a)
+                                            sócio(a) <b>{{ projeto.socio_2.nome }}</b>:
+                                            {% for field in projeto.socio_2.get_required_fields_none %}
+                                            <a>{{ field }},</a>
+                                            {% endfor %}
+                                        </p>
+                                    </div>
+                                   {% endif %}
+                               {% endif %}
+                        {% endif %}
+                        {% if not projeto.submetido %}
+                            {% if not projeto.get_required_fields_none %}
+                            <div class="alert alert-success alertCad" role="alert">
+                             <p class="text-msg font-italic mb-0">
+                                <i class="fa fa-check" aria-hidden="true"></i>
+                                <b>Atenção</b> O cadastro do empreendimento <b>{{ projeto.nome_empreendimento }}</b>
+                                está pronto para envio.</p>
+                            </div>
+                            {% endif %}
+                            {% if not projeto.proponente.get_required_fields_none %}
+                            <div class="alert alert-success alertCad" role="alert">
+                                <p class="text-msg font-italic">
+                                    <i class="fa fa-check" aria-hidden="true"></i>
+                                    <b>Atenção</b> O cadastro da proponente <b>{{ projeto.socia_gestora.nome }}</b>
+                                    está pronto para envio.</p>
+                            </div>
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="row justify-content-md-center">
+                    <div class="col-md-6 col-12">
+<!--                        <div class="alert alert-info alertCad" role="alert">-->
+<!--                            {% if projeto.submetido %}-->
+<!--                                <h4 class="text-msg text-center font-italic">-->
+<!--                                    <i class="fa fa-check mr-2 fa-2x" aria-hidden="true"></i>-->
+<!--                                    Situação da proposta: {{ projeto.get_status }}-->
+<!--                                </h4>-->
+<!--                        </div>-->
+<!--                                {% get_config_flag "treinamento" as treinamento_is_active %}-->
+<!--                                {% if projeto.is_selected and treinamento_is_active %}-->
+<!--                                    <div>-->
+<!--                                        <p class="lead text-gray-700">-->
+<!--                                            Você pode definir uma modalidade de treinamento do plano de negócio,-->
+<!--                                            presencial ou online</p>-->
+<!--                                        <a href="/treinamento/" class="btn btn-green">Modalidade de Treinamento</a>-->
+<!--                                    </div>-->
+<!--                                {% endif %}-->
+<!--                            {% else %}-->
+<!--                                <h5 class="text-msg text-center font-italic">-->
+<!--                                    <i class="fa fa-exclamation-triangle fa-2x" aria-hidden="true"></i>-->
+<!--                                     Inscrições Encerradas - Aguarde novas informações em breve.-->
+<!--                                </h5>-->
+<!--                            {% endif %}-->
+<!--                    </div>-->
+<!--                   {% if cadastroprojeto_is_active and projeto.is_ready_to_send %}-->
+<!--                   <div class="col-lg-6 col-md-8 col-12" style="margin: 20px auto;">-->
+<!--                       <a class="btn btn-success btn-block btn-lg btnProjeto"  href="/submeter-proposta/">-->
+<!--                           <span class="txtHideEviando"><i class="fa fa-paper-plane text-white"></i> Enviar Proposta</a></span>-->
+<!--                       <span class="txtEnviando">Enviando...</span><span class="txtEnviando">-->
+<!--                           <img class="img" alt="" width="25"-->
+<!--                             src="{% static '/img/loading.gif' %}">-->
+<!--                       </span>-->
+<!--                   </div>-->
+<!--                   {% endif %}-->
+                </div>
+
+                <div class="row justify-content-md-center mb-4 mt-2">
+                    <div class="col-md-8  col-12 text-left">
+                        {% get_config_flag "recurso" as recurso_is_active %}
+                        {% get_config_flag "mensagemindex" as mensagemindex_is_active %}
+                        {% get_config_value "mensagemindex" as mensagemindex_text %}
+
+                        {% if projeto.ultima_avaliacao and recurso_is_active%}
+                        <div class="alert alert-warning">
+                            <p class="text-msg font-italic">
+                                <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+                                <b>Atenção</b> Os recursos contra o resultado parcial deverão ser enviados para o endereço
+                                eletrônico <a class="text-blue">licitacao@fortaleza.ce.gov.br</a>,
+                                dirigidas à <b>COMISSÃO ESPECIAL DE LICITAÇÕES – CEL
+                                    de Fortaleza. </b>
+                                Somente será aceito um recurso por participante.
+                            </p>
+                        </div>
+                        {% endif %}
+
+                        {% if mensagemindex_is_active %}
+                            {% get_config_flag "planonegocio" as planonegocio_is_active %}
+                            {% get_config_value "planonegocio" as planonegocio_text %}
+                            {% if projeto.is_selected and planonegocio_is_active %}
+                            <div class="alert alert-warning"></div>
+                                <p class="text-msg font-italic">
+                                    <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+                                    <b>Atenção</b> {{ mensagemindex_text}}
+                                </p>
+                            </div>
+                            {% endif %}
+                            <div class="alert alert-warning"></div>
+                                <p class="text-msg font-italic">
+                                    <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+                                    <b>Atenção</b> {{ planonegocio_text }}
+                                </p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="row appcards justify-content-md-center">
+                   {% if entregachip_is_active and projeto.is_aproved %}
+                    <div class="col-lg-4 col-md-6 col-sm-12">
+                        <div class="card card-profile">
+                            <div class="card-avatar">
+                                <img class="img" alt=""
+                                src="{% static '/img/plano-negocio.png' %}">
+                            </div>
+                            <div class="card-body ">
+                                <p class="card-description">
+                                    Agendamento de entrega de chip para participantes que realizaram a
+                                    inscrição nos locais de suporte do Programa.
+                                </p>
+                                <div class="mt-4">
+                                    <a href="/entrega-chip" class="btn btn-blue btn-block btn-lg">Entrega do Chip</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    <div class="col-lg-4 col-md-6 col-sm-12">
+                        <div class="card card-profile">
+                            <div class="card-avatar">
+                                <img class="img" alt=""
+                                src="{% static '/img/iconSocios.png' %}">
+                            </div>
+                            <div class="card-body ">
+                                <p class="card-description">
+                                    Cadastro da proponente, dados pessoais da pessoa física dona do empreendimento.
+                                </p>
+
+                                {% if projeto.proponente.ultima_avaliacao %}
+                                    <a><b>Última avaliação:</b></a>
+                                    {% if not projeto.proponente.is_aproved %}
+                                    <a style="color:red">Não Habilitado</a>
+                                    {% else %}
+                                    <a style="color:green">Habilitado</a>
+                                    {% endif %}
+                                    <p style="color:gray">{{ projeto.proponente.ultima_avaliacao.motivo }}</p>
+                                {% endif %}
+
+                                {% if not projeto.proponente.is_aproved %}
+                                    {% if projeto.proponente.submissao %}
+                                    <p style="color:blue"><b>Enviado, aguardando avaliação</b></p>
+                                    {% else %}
+                                    <p style="color:orange"><b>Aguardando envio</b></p>
+                                    {% endif %}
+                                {% endif %}
+
+                                <div class="mt-4">
+                                    <a href="/cadastro-proponente/?step=0" class="btn btn-pink btn-block btn-lg">Proponente</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6 col-sm-12">
+                        <div class="card card-profile">
+                            <div class="card-avatar">
+                                <img class="img" alt=""
+                                src="{% static '/img/iconProjetos.png' %}">
+                            </div>
+                            <div class="card-body ">
+                                <p class="card-description">
+                                    Cadastro de informações relativas ao seu empreendimento com detalhes,
+                                    plano de negócio, gestão e localização.
+                                </p>
+
+                                {% if projeto.ultima_avaliacao %}
+                                <a><b>Última avaliação:</b></a>
+                                    {% if not projeto.is_aproved %}
+                                    <a style="color:red">Não Habilitado</a>
+                                    {% else %}
+                                    <a style="color:green">Habilitado</a>
+                                    {% endif %}
+                                    <p style="color:gray">{{ projeto.ultima_avaliacao.motivo }}</p>
+                                {% endif %}
+
+                                {% if not projeto.is_aproved %}
+                                    {% if projeto.submissao %}
+                                    <p style="color:blue"><b>Enviado, aguardando avaliação</b></p>
+                                    {% else %}
+                                    <p style="color:orange"><b>Aguardando envio</b></p>
+                                    {% endif %}
+                                {% endif %}
+
+                                <div class="mt-4">
+                                    <a href="/cadastro-proposta/?step=0" class="btn btn-main btn-block btn-lg">Proposta</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% if inscricaocapacitacao_is_active %}
+                        <div class="col-lg-4 col-md-6 col-sm-12"><!--****Capacitação-->
+                            <div class="card card-profile">
+                                <div class="card-avatar">
+                                    <img class="img" alt=""
+                                    src="{% static '/img/iconProjetos.png' %}">
+                                </div>
+                                <div class="card-body ">
+                                    <p class="card-description">
+                                        Cadastro de informações relativas ao seu empreendimento com detalhes,
+                                        plano de negócio, gestão e localização.
+                                    </p>
+
+                                    {% if projeto.ultima_avaliacao %}
+                                    <a><b>Última avaliação:</b></a>
+                                        {% if not projeto.is_aproved %}
+                                        <a style="color:red">Não Habilitado</a>
+                                        {% else %}
+                                        <a style="color:green">Habilitado</a>
+                                        {% endif %}
+                                        <p style="color:gray">{{ projeto.ultima_avaliacao.motivo }}</p>
+                                    {% endif %}
+
+                                    {% if not projeto.is_aproved %}
+                                        {% if projeto.submissao %}
+                                        <p style="color:blue"><b>Enviado, aguardando avaliação</b></p>
+                                        {% else %}
+                                        <p style="color:orange"><b>Aguardando envio</b></p>
+                                        {% endif %}
+                                    {% endif %}
+
+                                    <div class="mt-4">
+                                        <a href="/inscricao/" class="btn btn-main btn-block btn-lg">Inscrição</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><!--***/Capacitação***-->
+                    {% endif %}
+                    {% if contrato_is_active %}
+                        <div class="col-lg-4 col-md-6 col-sm-12"><!--****Contrato-->
+                            <div class="card card-profile">
+                                <div class="card-avatar">
+                                    <img class="img" alt=""
+                                    src="{% static '/img/iconProjetos.png' %}">
+                                </div>
+                                <div class="card-body ">
+                                    <p class="card-description">
+                                        Cadastro de informações relativas ao seu empreendimento com detalhes,
+                                        plano de negócio, gestão e localização.
+                                    </p>
+
+                                    {% if projeto.ultima_avaliacao %}
+                                    <a><b>Última avaliação:</b></a>
+                                        {% if not projeto.is_aproved %}
+                                        <a style="color:red">Não Habilitado</a>
+                                        {% else %}
+                                        <a style="color:green">Habilitado</a>
+                                        {% endif %}
+                                        <p style="color:gray">{{ projeto.ultima_avaliacao.motivo }}</p>
+                                    {% endif %}
+
+                                    {% if not projeto.is_aproved %}
+                                        {% if projeto.submissao %}
+                                        <p style="color:blue"><b>Enviado, aguardando avaliação</b></p>
+                                        {% else %}
+                                        <p style="color:orange"><b>Aguardando envio</b></p>
+                                        {% endif %}
+                                    {% endif %}
+
+                                    <div class="mt-4">
+                                        <a href="/cadastro-contrato/" class="btn btn-main btn-block btn-lg">Contrato</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><!--***/Contrato***-->
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% elif form %}
+        <div class="">
+            <div class="jumbotron bgMulher">
+                {% if cadastroprojeto_is_active %}
+                   <h2 class="pl-3"> Bem vinda, <b class="text-mulher">{{ username }}</b></h2>
+                   <div class="form-check">
+                       <input type="checkbox" name="decIr" id="decIrSde">
+                       <label class="form-check-label text-indigo font-italic">
+                           Li e Declaro não participar em programas de <b>Financiamento Municipal</b> e ser <b>Isento do Imposto de renda</b>.
+                           <!-- <button" class="btnDeclaracaoSde btn btn-indigo"> Ler declaração</button> -->
+                       </label>
+                       <p class="declaracaoSde">
+                        Eu,<span class="idParticipante text-mulher font-weight-bold">{{ username }}</span> portador(a) do CPF nº
+                        <span class="cpfParticipante font-weight-bold text-mulher">{{ cpf }}</span>,
+                        Li e Declaro que não participei de outros programas de Financiamento Municipal e sou Isento do Imposto de Renda.
+                       </p>
+                   </div>
+                   <div class="col-sm-8 col-12">
+                    <form  method="POST" class="post-form formProjectName" enctype="multipart/form-data">
+                        <fieldset></fieldset>
+                        {% csrf_token %}
+                        {{ form.media }}
+                        {{ form|crispy }}
+                        <button type="submit" class="btn btn-pink">
+                            Cadastrar proposta
+                        </button>
+                    </form>
+                   <div class="form-check">
+                       <p>
+                        *Para cadastrar proposta é necessário ser do sexo feminino e ter no mínimo 18 anos de idade.
+                       </p>
+                   </div>
+                   </div>
+                    {% else %}
+                    <h5 class="text-msg text-center font-italic text-indigo">
+                         INSCRIÇÕES ENCERRADAS - Aguarde novas informações em breve.
+                    </h5>
+                {% endif %}
+            </div>
+        </div>
+        {% else %}
+        {% endif %}
+        <br>
+        <div>
+            {% if form.non_field_errors %}
+                <h3 class="">{{ form.non_field_errors }}</h3>
+            {% endif %}
+            {% for field in form %}
+                {% if field.errors %}
+                    <div class="alert alert-danger alert-dismissible col-12 mx-1" role="alert">
+                        <div id="form_errors">
+                                {{ field.label }}
+                                <ul class="errorlist">
+                                {% for error in field.errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                                </ul>
+                        </div>
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </section>
+    <!--/div container-->
+{% endblock %}

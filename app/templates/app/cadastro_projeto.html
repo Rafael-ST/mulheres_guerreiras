@@ -1,0 +1,359 @@
+{% extends './base.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% load bootstrap4 %}
+{% load configs %}
+
+{% block content %}
+    <!--div container-->
+    <section class="">
+            <div class="container-fluid">
+                <div class="row justify-content-center">
+                    <div class="col-md-12 text-center">
+                        <a class="btn btn-primary" href="/">Início</a>
+                    </div>
+                </div>
+            </div>
+
+            {% if form.non_field_errors %}
+                <h3 class="text-white">{{ form.non_field_errors }}</h3>
+            {% endif %}
+            {% for field in form %}
+                {% if field.errors %}
+                    <div class="alert alert-danger alert-dismissible col-12 mx-1" role="alert">
+                        <div id="form_errors">
+                                {{ field.label }}
+                                <ul class="errorlist">
+                                {% for error in field.errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                                </ul>
+                        </div>
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                {% endif %}
+            {% endfor %}
+
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-primary alert-dismissible fade show alertCad" role="alert">
+                        <h4 class="text-msg text-center"> {{ message }} </h4>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="container-fluid my-4 p-0">
+                    <div class="row">
+                        <div class="col-sm-12 mb-2">
+                            <p> 
+                            <div class="alert alert-info alert-dismissible fade show" role="alert">
+                                <span class="alert-inner--text">
+                                    <em class="text-primary txtEnd text-lowercase">
+                                        <p>
+                                            <i class="fa fa-exclamation-triangle text-yellow fa-2x" aria-hidden="true"></i> 
+                                            <b class="text-gray-800">Importante</b>
+                                            <span class="text-gray-700">Caso se empreendimento ainda não possua um endereço físico fixo, 
+                                                preencha os dados com seu endereço residencial</span>
+                                        </p>
+                                        <p class="">
+                                            <i class="fa fa-exclamation-triangle text-yellow fa-2x" aria-hidden="true"></i> 
+                                            <b class="text-gray-800">Importante</b>
+                                            <span class="text-gray-700">Após finalizar
+                                                esse cadastro, você deve voltar ao painel 
+                                                principal e cadastrar seu projeto e finalizar sua inscrição.</span>
+                                        </p>
+                                        <p class="">
+                                            <i class="fa fa-exclamation-triangle text-yellow fa-2x" aria-hidden="true"></i> 
+                                            <b class="text-gray-800">Importante</b>
+                                            <span class="text-gray-700">Você pode efetuar o download para conferir seu projeto.</span>
+                                            <a class="text-danger" target="_blank" href="{% url 'export_proposta_pdf' %}">
+                                                <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
+                                                Download 
+                                            </a>
+                                        </p>
+                                    </em>
+                                </span>
+                            </div>
+                            </p>
+                        </div> 
+                        <div class="col-sm-12 text-center my-3">
+                            <h2 class="text-main">Cadastro do projeto</h2>
+                        </div>
+                    </div>
+                    <div class="card card-form">
+                        <form action="." method="post" id="msform" class="formMain form p4  
+                        formProjeto post-form" data-atividades-url="{% url 'ajax_load_atividades' %}" novalidate>
+                        {% csrf_token %}
+                            <!-- progressbar -->
+                            <!-- <ul id="progressbar" class="">
+                                <li class="active" id="account"><strong class="d-none d-sm-block">Dados do empreendimento</strong></li>
+                                <li id="residenciais"><strong class="d-none d-sm-block">Informações do mercado I</strong></li>
+                                <li id="financeiros"><strong class="d-none d-sm-block">Informações do mercado II</strong></li>
+                                <li id="upload"><strong class="d-none d-sm-block">Investimentoss</strong></li>
+                                <li id="confirm"><strong class="d-none d-sm-block">Finalizar</strong></li>
+                            </ul>  -->
+                        <!-- progressbar -->
+                        <ul id="progressbar" class="">
+                            <!--Criado via JS dinâmicamente-->
+                        </ul> 
+                        <!-- fieldsets -->
+
+                        <!--dados empreendimento-->
+                        <fieldset>
+                            <div class="form-card">
+                                <h2 class="fs-title">Dados do empreendimento</h2> 
+                                <hr class="my-1 mb-3">
+                                <!-- formulario pessal core-->
+                                    <div class="form-row">
+                                        <div class="col-sm-9 col-12">
+                                            {{ form.nome_empreendimento|as_crispy_field }}
+                                        </div>
+                                        <div class="col-sm-3 col-12">
+                                            {{ form.bairro|as_crispy_field }}
+                                        </div>
+                                        <div class="col-sm-6 col-12">
+                                            {{ form.finalidade|as_crispy_field }}
+                                        </div>
+                                        <div class="col-sm-6 col-12">
+                                            {{ form.setor|as_crispy_field }}
+                                        </div>
+                                        <div class="col-sm-6 col-12">
+                                            {{ form.atividade|as_crispy_field }}
+                                        </div>
+                                        <div class="col-sm-6 col-12">
+                                            {{ form.outra_renda|as_crispy_field }}
+                                        </div>
+                                    </div>                                  
+                                <!-- /formulario pessal core-->
+                            </div> 
+
+<!--                            <a href="/cadastro-proposta/?step=1" class="nextBtn btn btn-teal-300">Próximo</a>-->
+ 
+                        </fieldset>
+                        <!--/dados empreendimento-->
+
+                        <!--dados Informações de mercado I-->
+                        <fieldset>
+                            <div class="form-card">
+                                <h2 class="fs-title">Dados Informações do mercado I</h2> 
+                                <hr class="my-1">
+                                <div class="form-row">
+                                    <div class="col-sm-6 col-12">
+                                        {{ form.estudo_setor|as_crispy_field }}
+                                    </div>
+                                    <div class="col-sm-6 col-12">
+                                        {{ form.idade_cliente|as_crispy_field }}
+                                    </div>
+                                    <div class="col-sm-6 col-12">
+                                        {{ form.frequencia|as_crispy_field }}
+                                    </div>
+                                    <div class="col-sm-6 col-8">
+                                        {{ form.tamanho_mercado|as_crispy_field }}
+                                    </div>
+                                    <div class="col-sm-6 col-12">
+                                        {{ form.localizacao|as_crispy_field }}
+                                    </div>
+                                    <div class="col-sm-6 col-12">
+                                        {{ form.motivo_localizacao |as_crispy_field }}
+                                    </div>
+                                    <div class="col-sm-6 col-12">
+                                        {{ form.divulgacao|as_crispy_field }}
+                                    </div> 
+                                    <div id="divHiddenOutra" class="col-sm-6 col-12 ">
+                                        {{ form.divulgacao_outra|as_crispy_field }}
+                                    </div>                                                                        
+                                    <div class="col-sm-6 col-12">
+                                        {{ form.estimulo_compra|as_crispy_field }}
+                                    </div>
+                                </div>                               
+                            </div> 
+
+<!--                            <a href="/cadastro-proposta/?step=0" class="prevBtn btn btn-warning mr-2">Anterior</a>-->
+<!--                            <a href="/cadastro-proposta/?step=2" class="nextBtn btn btn-teal-300">Próximo</a>-->
+
+<!--                            <button type="submit" class="btnSubmit btn btn-success btnFloat">-->
+<!--                                <span class="txtHideEviando"><i class="fa fa-paper-plane mr-2"></i>Salvar progresso</span>-->
+<!--                                <span class="txtEnviando">Enviando...</span>-->
+<!--                                <span class="txtEnviando">-->
+<!--                                    <img class="img" alt="" width="25"-->
+<!--                                    src="{% static '/img/loading.gif' %}">-->
+<!--                                </span>-->
+<!--                            </button>-->
+                        </fieldset>
+                        <!--/dados Informações de mercado I-->   
+
+                        <!--dados Informações de mercado II-->
+                        <fieldset>
+                            <div class="form-card">
+                                <h2 class="fs-title">Dados Informações do mercado II</h2> 
+                                <hr class="my-1">
+                                <div class="form-row">
+                                    <div class="col-sm-6 col-12">
+                                        {{ form.concorrente_atendimento|as_crispy_field }}
+                                    </div>
+                                    <div class="col-sm-6 col-12">
+                                        {{ form.concorrente_qualidade|as_crispy_field }}
+                                    </div>
+                                    <div class="col-sm-6 col-12">
+                                        {{ form.concorrente_localizacao|as_crispy_field }}
+                                    </div>
+                                    <div class="col-sm-6 col-8">
+                                        {{ form.concorrente_preco|as_crispy_field }}
+                                    </div>
+                                    <div class="col-sm-6 col-12">
+                                        {{ form.concorrente_forma_pagamento|as_crispy_field }}
+                                    </div>
+                                    <div class="col-sm-6 col-12">
+                                        {{ form.concorrente_forma_pagamento_outra  |as_crispy_field }}
+                                    </div>
+                                    <div class="col-sm-6 col-12">
+                                        {{ form.concorrente_forma_propaganda|as_crispy_field }}
+                                    </div>                                                                        
+                                </div>                              
+                            </div> 
+
+<!--                            <a href="/cadastro-proposta/?step=1" class="prevBtn btn btn-warning mr-2">Anterior</a>-->
+<!--                            <a href="/cadastro-proposta/?step=3" class="nextBtn btn btn-teal-300">Próximo</a>-->
+
+<!--                            <button type="submit" class="btnSubmit btn btn-success btnFloat">-->
+<!--                                <span class="txtHideEviando"><i class="fa fa-paper-plane mr-2"></i>Salvar progresso</span>-->
+<!--                                <span class="txtEnviando">Enviando...</span>-->
+<!--                                <span class="txtEnviando">-->
+<!--                                    <img class="img" alt="" width="25"-->
+<!--                                    src="{% static '/img/loading.gif' %}">-->
+<!--                                </span>-->
+<!--                            </button>-->
+                        </fieldset>
+                        <!--/dados Informações de mercado II-->   
+
+                        <!--Investimentos-->
+                        <fieldset>
+                            <div class="form-card">
+                                <h2 class="fs-title">Investimentos</h2> 
+                                <hr class="my-1">
+                                <div class="form-row">
+                                    <div class="col-12">
+                                        <div class="basic mt-3" id="Investimento">
+                                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                                <strong class="text-gray-700 mb-3">Quais as Máquinas, Equipamentos e Insumos a serem comprados com o dinheiro do financiamento.?</strong>
+                                                <p class="">
+                                                    Especifique detalhando item que tipo, valor e quantidade
+                                                </p>
+                                                <div class="btn-group divGroupBtn">
+                                                    <button type="submit" class="btn btn-teal-300 mr-2" name="submitinvestimento">
+                                                        <i class="icon-plus icons mr-1"></i> Investimentos
+                                                    </button>
+                                                    <button  type="button" id="btnInvest" class="btn btn-info" >
+                                                        <i class="icon-list icons mr-1"></i> Listar
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div id="tableInvest">
+                                                {% include "app/extensionslist.html" with groups=groups_inv total_geral=total_geral_inv %}
+                                            </div>
+                                        </div>
+                                    </div>                                                                       
+                                </div>                           
+                            </div> 
+
+<!--                            <a href="/cadastro-proposta/?step=2" class="prevBtn btn btn-warning mr-2">Anterior</a>-->
+<!--                            <a href="/cadastro-proposta/?step=4" class="nextBtn btn btn-teal-300">Próximo</a>-->
+
+<!--                            <button type="submit" class="btnSubmit btn btn-success btnFloat">-->
+<!--                                <span class="txtHideEviando"><i class="fa fa-paper-plane mr-2"></i>Salvar progresso</span>-->
+<!--                                <span class="txtEnviando">Enviando...</span>-->
+<!--                                <span class="txtEnviando">-->
+<!--                                    <img class="img" alt="" width="25"-->
+<!--                                    src="{% static '/img/loading.gif' %}">-->
+<!--                                </span>-->
+<!--                            </button>-->
+                        </fieldset>
+                        <!--/Investimentos-->  
+                        
+                        <!--finalizar e enviar-->
+                        <fieldset>
+                            <div class="form-card">
+                                <h2 class="fs-title">Finalizar e salvar
+                                    <a class="text-danger" target="_blank" href="{% url 'export_proposta_pdf' %}">
+                                        <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
+                                    </a>
+                                </h2> 
+                                <hr class="my-1">
+
+                                <!-- include dados proponente pdf-->
+                                {% include "app/pdf.html" %}
+                                <!--/include dados proponente pdf-->
+                            </div> 
+
+<!--                            <a href="/cadastro-proposta/?step=3" class="prevBtn btn btn-warning mr-2">Anterior</a>-->
+
+                            <!--submit-->
+<!--                            <button type="submit" class="btnSubmit btn btn-success btnFixoGestora">-->
+<!--                                <span class="txtHideEviando">Salvar</span>-->
+<!--                                <span class="txtEnviando">salvando...</span>-->
+<!--                                <span class="txtEnviando">-->
+<!--                                    <img class="img" alt="" width="25"-->
+<!--                                    src="{% static '/img/loading.gif' %}">-->
+<!--                                </span>-->
+<!--                            </button>-->
+                            <div class="buttonsSocios">
+                                <button type="submit" class="btnSubmit btn btn-success btnProjetoBlock">
+                                    <span class="txtHideEviando">Salvar</span>
+                                    <span class="txtEnviando">Salvando...</span>
+                                    <span class="txtEnviando">
+                                        <img class="img" alt="" width="25"
+                                        src="{% static '/img/loading.gif' %}">
+                                    </span>
+                                </button>
+                            </div>
+                           {% if form.instance.is_ready_to_send %}
+                           <div class="col-lg-6 col-md-8 col-12" style="margin: 20px auto;">
+                               <a class="btn btn-success btn-block btn-lg btnProjeto"  href="/submeter-proposta/">
+                                   <span class="txtHideEviando"><i class="fa fa-paper-plane text-white"></i> Enviar Proposta</a></span>
+                               <span class="txtEnviando">Enviando...</span><span class="txtEnviando">
+                                   <img class="img" alt="" width="25"
+                                     src="{% static '/img/loading.gif' %}">
+                               </span>
+                           </div>
+                           {% endif %}
+                            <!--/submit-->
+                        </fieldset>
+                        <!--finalizar e enviar-->
+                            {% if  not form.instance.submissao %}
+                                <button type="submit" class="btnSubmit btn btn-success btnFloat">
+                                    <span class="txtHideEviando"><i class="fa fa-paper-plane mr-2"></i>Salvar progresso</span>
+                                    <span class="txtEnviando">Enviando...</span>
+                                    <span class="txtEnviando">
+                                        <img class="img" alt="" width="25"
+                                        src="{% static '/img/loading.gif' %}">
+                                    </span>
+                                </button>
+
+                                <input type="hidden" id="step" name="step" value="{{ request.GET.step }}">
+                                {% if request.GET.step|add:"0" > 0 %}
+                                <button type="submit" class="btnSubmit btn btn-warning" name="previousstep">
+                                    Anterior
+                                </button>
+                                {% endif %}
+
+                                {% if request.GET.step|add:"0" < 4 %}
+                                <button type="submit" class="btnSubmit btn btn-teal-300" name="nextstep">
+                                    <span class="txtHideEviando">Próximo</span>
+                                    <span class="txtEnviando">Salvando...</span>
+                                    <span class="txtEnviando">
+                                        <img class="img" alt="" width="25"
+                                        src="{% static '/img/loading.gif' %}">
+                                    </span>
+                                </button>
+                                {% endif %}
+                            {% endif %}
+
+                        </form>
+                    </div>
+                </div>
+                <!--/multisetp-->
+            {% endif %}
+    </section>
+    <!--/div container-->
+{% endblock %}

@@ -1,0 +1,63 @@
+{% extends './base.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% load bootstrap4 %}
+{% load configs %}
+
+{% block content %}
+
+   <!--<p>Olá mundo Inscrição</p>
+    <form action="." method="POST">
+        {% csrf_token %}
+        {{form}}
+        <button type="submit">Inscrever-se</button>
+    </form>
+
+    <hr>-->
+
+    <form action="." method="POST">
+        {% csrf_token %}
+        <!--<input type="text" name="proponente" value={{proponente}} readonly>-->
+        {% if capacitacoes %}
+            {% for capacitacao in capacitacoes %}
+                <label for="{{capacitacao}}">{{capacitacao}}
+                <p for="{{capacitacao}}">{{capacitacao.vagas}} vagas</p>
+                <p>{{capacitacao.tipo_capacitacao}}</p>
+                <p>{{capacitacao.data_aula}}</p>
+                {% if ins == True %}
+                    <input type="radio" name="capacitacao" value="{{capacitacao}}" id="{{capacitacao}}" disabled>
+                {% elif capacitacao.vagas <= 0 %}
+                    <input type="radio" name="capacitacao" value="{{capacitacao}}" id="{{capacitacao}}" disabled>
+                {% else %}
+                    <input type="radio" name="capacitacao" value="{{capacitacao}}" id="{{capacitacao}}" required checked>
+                {%endif%}
+                </label>
+            {%endfor%}
+        {%endif%}
+        <br>
+        {% if ins == True %}
+            <p>Você está matriculado em:</p>
+            {% if insc %}
+                <p>{{insc.capacitacao}}</p>
+            {%endif%}
+            <a href="/cancelar_inscricao/">Cancelar Inscrição</a>
+        {% else %}
+            <button type="submit">Inscrever-se</button>
+        {% endif %}
+    </form>
+
+
+    </br></br>
+    <!--<form action="." method="POST">
+        {% csrf_token %}
+        <input type="text" name="proponente" value={{proponente}}>
+        {% if capacitacoes %}
+        <select name="capacitacao">
+            {% for capacitacao in capacitacoes %}
+                <option value="{{capacitacao}}">{{capacitacao}}</option>
+            {%endfor%}
+        </select>
+        {%endif%}
+        <button type="submit">Inscrever-se</button>
+    </form>-->
+{% endblock %}

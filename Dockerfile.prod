@@ -1,0 +1,48 @@
+FROM python:3.6-alpine as builder
+
+RUN apk --update add \
+    build-base \
+    libpq \
+    postgresql-dev \
+    gcc \
+    python3-dev \
+    musl-dev \
+    jpeg-dev \
+    zlib-dev \
+    libffi-dev \
+    cairo-dev \
+    pango-dev \
+    gdk-pixbuf-dev
+
+RUN apk --no-cache add msttcorefonts-installer fontconfig && \
+    update-ms-fonts && \
+    fc-cache -f
+
+RUN mkdir /www
+WORKDIR /www
+RUN pip install --upgrade pip
+RUN pip install -r requirements.txt
+
+ENV PYTHONUNBUFFERED 1
+
+COPY . /www/
+
+
+#FROM python:3.6-alpine
+#
+#RUN apk --update add \
+#    postgresql-dev
+#
+#RUN apk del py-pip
+#
+#ENV PYTHONUNBUFFERED 1
+#
+#WORKDIR /usr/local/lib/python3.6/site-packages
+#RUN rm -rf *
+#COPY --from=builder /usr/local/lib/python3.6/site-packages .
+#COPY --from=builder /usr/local/bin/ /usr/local/bin/
+#
+#RUN mkdir /www
+#WORKDIR /www
+#
+#COPY --from=builder /www .

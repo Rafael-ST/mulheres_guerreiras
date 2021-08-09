@@ -1,0 +1,66 @@
+{% load crispy_forms_tags %}
+{% load static %}
+{% load bootstrap4 %}
+
+{% block content %}
+    <!--div container-->
+    <section class="extensionList">
+        {% if groups %}
+        {% for group in groups %}
+        <div  style="display:flex; justify-content: space-between;">
+            <h5 class="extensionList-label"><b>{{ group.label }} </b></h5>
+            <h5>R$ {{ group.total }} ({{ group.perc }}%)</h5>
+        </div>
+        <table class="table">
+        <thead>
+          <tr>
+            {% for fields in group.exts.0.get_verbose_name_fields %}
+              <th> {{ fields }} </th>
+            {% endfor %}
+            <th> Valor Total (Saldo) </th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for obj in group.exts %}
+          <tr>
+            {% for value in obj.get_values %}
+              <td> {{ value|default_if_none:"-" }} </td>
+            {% endfor %}
+              <td> {{ obj.valor_total }} </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+        </table>
+        {% endfor %}
+        <div class="teste">
+            <p class="text-main" style="display:flex; justify-content: space-between; font-size:22px">TOTAL
+              <b>R$ {{ total_geral }}</b>
+            </p>
+        </div>
+        {% elif objects %}
+        <table class="table table-striped">
+        <thead>
+          <tr>
+            {% for fields in objects.0.get_verbose_name_fields %}
+              <th> {{ fields }} </th>
+            {% endfor %}
+          </tr>
+        </thead>
+        <tbody>
+          {% for obj in objects %}
+          <tr>
+            {% for value in obj.get_values %}
+              <td> {{ value|default_if_none:"-" }} </td>
+            {% endfor %}
+          </tr>
+          {% endfor %}
+        </tbody>
+        </table>
+        {% else %}
+        <p>
+          <i class="fa fa-exclamation-triangle text-yellow fa-2x" aria-hidden="true"></i>
+          Nenhum registro encontrado</p>
+        {% endif %}
+    </section>
+    <!--/div container-->
+{% endblock %}
