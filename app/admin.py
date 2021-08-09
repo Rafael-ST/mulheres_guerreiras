@@ -9,7 +9,7 @@ from django.utils.html import format_html
 
 from app.constants import RESULTADOS_CORES, TIPO_INV
 from app.models import EntregaChip, Proposta, AgendamentoChip, PropostaEntregaChipProxy, AvaliacaoProposta, \
-    Investimento, AvaliacaoProponente, Proponente
+    Investimento, AvaliacaoProponente, Proponente, AvaliacaoContrato
 from app.utils import export_pdf
 from .models import Configs, Bairro, Atividade, Setor, LocalEntrega, Contrato, Capacitacoes, \
     Inscricao
@@ -396,6 +396,65 @@ class InscricaoAdmin(admin.ModelAdmin, ToPdf):
     #        instance.save()
     #    formset.save_m2m()
 
+class AvaliacaoContratoInline(admin.StackedInline):
+    model = AvaliacaoContrato
+    readonly_fields = ['avaliador', 'created_at']
+    extra = 1
+
+
+class ContratoAdmin(admin.ModelAdmin):
+    list_display = ['proponente', 'ultima_avaliacao_fmt']
+    search_fields = ('nome', 'cpf', )
+    inlines = [AvaliacaoContratoInline, ]
+    list_filter = ( )
+
+
+
+    def get_queryset(self, request):
+        queryset = super().get_queryset(request)
+        if request.user.is_superuser:
+            return queryset
+        return queryset.filter(submissao__isnull=False)
+
+    def ultima_avaliacao_fmt(self, obj):
+        return format_html(
+        '<b style="color:{};">{}</b>',
+        dict(RESULTADOS_CORES)[obj.ultima_avaliacao.resultado] if obj.ultima_avaliacao else 'gray',
+        obj.ultima_avaliacao if obj.ultima_avaliacao else 'Não Avaliado',
+        )
+    ultima_avaliacao_fmt.allow_tags = True
+    ultima_avaliacao_fmt.admin_order_field = 'ultima_avaliacao'
+    ultima_avaliacao_fmt.short_description = 'Última Avaliação'
+
+    def save_formset(self, request, form, formset, change):
+        instances = formset.save(commit=False)
+        for obj in formset.deleted_objects:
+            obj.delete()
+        for instance in instances:
+            if instance.__class__ == AvaliacaoContrato:
+                instance.avaliador = request.user
+                instance.save()
+                if instance.resultado == '0':
+                    instance.contrato.submissao = None
+                instance.contrato.ult_avaliacao_ok = True
+                instance.contrato.ultima_avaliacao = instance
+                instance.contrato.save()
+                #todo habilitar envio de emails
+                # if instance.resultado == '1':
+                #     send_email_in_thread(instance.projeto.socia_gestora.email, SUBJECT_EMAIL_APROVADO,
+                #                          MESSAGE_EMAIL_APROVADO.format(instance.projeto.nome_empreendimento))
+                # elif instance.resultado == '0':
+                #     send_email_in_thread(instance.projeto.socia_gestora.email, SUBJECT_EMAIL_REPROVADO,
+                #                          MESSAGE_EMAIL_REPROVADO.format(instance.projeto.nome_empreendimento, instance.motivo))
+        formset.save_m2m()
+
+    def get_readonly_fields(self, request, obj=None):
+        if request.user.is_staff:
+            if request.user.is_superuser:
+                return ['id', 'proponente']
+            else:
+                return ['id', 'submissao', 'ult_avaliacao_ok']
+
 
 admin.site.register(Configs, ConfigsAdmin)
 admin.site.register(Bairro)
@@ -405,7 +464,7 @@ admin.site.register(LocalEntrega)
 admin.site.register(Proposta, PropostaAdmin)
 admin.site.register(Proponente, ProponenteAdmin)
 admin.site.register(PropostaEntregaChipProxy, PropostaEntregaChipAdmin)
-admin.site.register(Contrato)
+admin.site.register(Contrato, ContratoAdmin)
 admin.site.register(Capacitacoes, CapacitacoesAdmin)
 admin.site.register(Inscricao, InscricaoAdmin)
 # admin.site.register(EntregaChip, EntregaChipAdmin)

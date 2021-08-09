@@ -593,9 +593,24 @@ class Contrato(BaseModel):
     cpf = models.CharField(max_length=30)
     file_cartao_cnpj = models.FileField(upload_to=upload_path_handler, blank=True, null=True,
                                         verbose_name='Cartao CNPJ')
+    status = models.CharField(max_length=30, default="Teste")
+
+    submissao = models.DateTimeField(blank=True, null=True, verbose_name='Última subimissão')
+    ult_avaliacao_ok = models.BooleanField(default=False, verbose_name='Avaliado')
+    ultima_avaliacao = models.ForeignKey('AvaliacaoContrato', related_name='c_avaliacao', blank=True, null=True,
+                                         on_delete=models.CASCADE)
 
     def __str__(self):
         return self.proponente.nome
+
+
+class AvaliacaoContrato(Avaliacao):
+    contrato = models.ForeignKey('Contrato', related_name='contrato_avaliado',
+                                on_delete=models.CASCADE, blank=True, null=True)
+
+    class Meta:
+        verbose_name = "Avaliacao Contrato"
+        ordering = ['created_at']
 
 
 class Capacitacoes(BaseModel):
@@ -625,4 +640,3 @@ class Inscricao(BaseModel):
     class Meta:
         verbose_name = "Inscrições"
         verbose_name_plural = "Inscrições"
-

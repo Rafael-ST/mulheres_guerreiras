@@ -12,7 +12,7 @@ from weasyprint import HTML, CSS
 from app.constants import TIPO_NENHUM, TIPO_INV
 from app.forms import InitialForm, ProponenteForm, PropostaForm, InvestimentoForm, ContratoForm,InscricoesForm#, EntregaChipForm
 from app.models import Proposta, BeneficiadoAnterior, Proponente, Configs, Atividade, Investimento, EntregaChip, \
-    AgendamentoChip, Capacitacoes, Inscricao
+    AgendamentoChip, Capacitacoes, Inscricao, Contrato
 from app.utils import export_pdf
 from utils.helper import set_readonly_fields_sumetido, set_readonly_fields_sogiag
 import tempfile
@@ -366,7 +366,13 @@ def cadastro_contrato(request, token_parsed):
     else:
         form = ContratoForm(initial={'cpf': token_parsed['preferred_username']})
         form.fields['cpf'].widget.attrs['readonly'] = True
-    return render(request, "app/cadastro-contrato.html", {'form': form})
+        try:
+            contrato = Contrato.objects.get(cpf=token_parsed['preferred_username'])
+            imprimir = True
+        except Contrato.DoesNotExist:
+            imprimir = False
+
+    return render(request, "app/cadastro-contrato.html", {'form': form, 'imprimir': imprimir})
 
 
 @csrf_exempt
