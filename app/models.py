@@ -13,7 +13,7 @@ from django.db.models import PROTECT
 
 from app.constants import S_CONJ, ESCOLARIDADE, TRABALHA_ATUAL, TIPO_LOGRAOURO, RENDA_INDIVIDUAL, SIM_NAO, RESIDENTES, \
     AVALIACAO, FORMA_DE_PAGAMENTO, OBJETIVO, RAMO_ATIVIDADE, RAMO, IDADE_CLIENTES, FREQUENCIA, TAMANHO_MERCADO, \
-    LOCALIZACAO, ESTIMULO_COMPRA, PRECO, PROPAGANDA, DIVULGACAO, TIPO_INV, VALOR_TOTAL_INVS, RESULTADOS, TIPO_CAPACITACAO, MOTIVO_LOCALIZACAO
+    LOCALIZACAO, ESTIMULO_COMPRA, PRECO, PROPAGANDA, DIVULGACAO, TIPO_INV, VALOR_TOTAL_INVS, RESULTADOS, TIPO_CAPACITACAO, MOTIVO_LOCALIZACAO, STATUS
 from app.utils import try_or
 from app.validators import validate_CPF
 from utils.utils import resizeImage
@@ -593,7 +593,7 @@ class Contrato(BaseModel):
     cpf = models.CharField(max_length=30)
     file_cartao_cnpj = models.FileField(upload_to=upload_path_handler, blank=True, null=True,
                                         verbose_name='Cartao CNPJ')
-    status = models.CharField(max_length=30, default="Teste")
+    status = models.CharField(max_length=30, choices=STATUS, default='1')
 
     submissao = models.DateTimeField(blank=True, null=True, verbose_name='Última subimissão')
     ult_avaliacao_ok = models.BooleanField(default=False, verbose_name='Avaliado')
@@ -602,6 +602,14 @@ class Contrato(BaseModel):
 
     def __str__(self):
         return self.proponente.nome
+
+    def submeter(self):
+        if not self.submissao:
+            self.submissao = datetime.now()
+            self.ult_avaliacao_ok = False
+            self.save()
+            return True
+        return False
 
 
 class AvaliacaoContrato(Avaliacao):
