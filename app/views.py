@@ -359,6 +359,7 @@ def cadastro_contrato(request, token_parsed):
     proponente = Proponente.objects.get(cpf=token_parsed['preferred_username'])
     proponente = "a"
     if request.method == "POST":
+        imprimir = ""
         form = ContratoForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
