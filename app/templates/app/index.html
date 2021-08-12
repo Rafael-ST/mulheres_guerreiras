@@ -281,7 +281,7 @@
                             </div>
                         </div>
                     </div>
-                    {% if inscricaocapacitacao_is_active %}
+                    {% if inscricaocapacitacao_is_active and projeto.is_aproved %}
                         <div class="col-lg-4 col-md-6 col-sm-12"><!--****Capacitação-->
                             <div class="card card-profile">
                                 <div class="card-avatar">
@@ -319,7 +319,7 @@
                             </div>
                         </div><!--***/Capacitação***-->
                     {% endif %}
-                    {% if contrato_is_active %}
+                    {% if contrato_is_active and projeto.is_aproved %}
                         <div class="col-lg-4 col-md-6 col-sm-12"><!--****Contrato-->
                             <div class="card card-profile">
                                 <div class="card-avatar">
@@ -332,18 +332,18 @@
                                         plano de negócio, gestão e localização.
                                     </p>
 
-                                    {% if projeto.ultima_avaliacao %}
+                                    {% if contrato.ultima_avaliacao %}
                                     <a><b>Última avaliação:</b></a>
-                                        {% if not projeto.is_aproved %}
+                                        {% if not contrato.is_aproved %}
                                         <a style="color:red">Não Habilitado</a>
                                         {% else %}
                                         <a style="color:green">Habilitado</a>
                                         {% endif %}
-                                        <p style="color:gray">{{ projeto.ultima_avaliacao.motivo }}</p>
+                                        <p style="color:gray">{{ contrato.ultima_avaliacao.motivo }}</p>
                                     {% endif %}
 
-                                    {% if not projeto.is_aproved %}
-                                        {% if projeto.submissao %}
+                                    {% if not contrato.is_aproved %}
+                                        {% if contrato.submissao %}
                                         <p style="color:blue"><b>Enviado, aguardando avaliação</b></p>
                                         {% else %}
                                         <p style="color:orange"><b>Aguardando envio</b></p>

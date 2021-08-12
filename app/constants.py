@@ -346,6 +346,17 @@ ANOS = (
     ('5', u'Quinto Ano'),
 )
 
+STATUS = (
+    ('1', u'Aguardando envio de documentação'),
+    ('2', u'Documentação enviada e em análise pela equipe do Programa Nossas Guerreiras'),
+    ('3', u'Documentação analisada com sucesso sua documentação foi aceita'),
+    ('4', u'Documentação analisada com sucesso sua documentação não foi aceita'),
+    ('5', u'Aguardando realização da Capacitação'),
+    ('6', u'Aguardando assinatura do contrato'),
+    ('7', u'Aguardando publicação do contrato'),
+    ('8', u'Contrato publicado, aguarde o repasse do recurso')
+)
+
 TIPO_NENHUM = (
     ('0', u'Itens'),
 )

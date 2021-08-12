@@ -169,7 +169,7 @@ class ContratoForm(forms.ModelForm):
 
     class Meta:
         model = Contrato
-        fields = ('file_cartao_cnpj', 'cpf', 'proponente')
+        fields = ('file_cartao_cnpj', 'cpf')
 
     #def __init__(self, *args, **kwargs):
     #    is_post = kwargs.pop('is_post', None)

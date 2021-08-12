@@ -39,6 +39,10 @@ def index(request, token_parsed):
                 proposta.nome_empreendimento = nome_projeto
                 proposta.proponente = prop
                 proposta.save()
+                ##########
+                contrato = Contrato()
+                contrato.proponente = prop
+                contrato.save()
                 # send_email_in_thread(projeto.socia_gestora.email, SUBJECT_EMAIL_CADASTRO,
                 #                      MESSAGE_EMAIL_CADASTRO.format(projeto.nome_empreendimento))
         else:
@@ -47,6 +51,7 @@ def index(request, token_parsed):
     else:
         try:
             proposta = Proposta.objects.get(proponente__cpf=token_parsed['preferred_username'])
+            #contrato = Contrato.objects.get(proponente__cpf=token_parsed['preferred_username'])
             return render(request, "app/index.html", {'projeto': proposta})
         except Proposta.DoesNotExist:
             form = None
@@ -357,13 +362,20 @@ def submeter_proponente(request, token_parsed):
 @check_auth_sso
 def cadastro_contrato(request, token_parsed):
     proponente = Proponente.objects.get(cpf=token_parsed['preferred_username'])
-    proponente = "a"
+    contrato = Contrato.objects.get(proponente__cpf=token_parsed['preferred_username'])
+    print(contrato)
     if request.method == "POST":
-        imprimir = ""
-        form = ContratoForm(request.POST, request.FILES)
-        if form.is_valid():
-            form.save()
+        if contrato.submissao:
+            messages.error(request, "Alteração não realizada, este contrato já foi submetido")
             return redirect('/')
+        else:
+            form = ContratoForm(request.POST, request.FILES, instance=contrato)
+            if form.is_valid():
+                contrato.status = 2
+                contrato = form.save(commit=False)
+                contrato.save()
+                contrato.submeter()
+                return redirect('/')
     else:
         form = ContratoForm(initial={'cpf': token_parsed['preferred_username']})
         form.fields['cpf'].widget.attrs['readonly'] = True
