@@ -1,3 +1,4 @@
+from django.core.files.storage import FileSystemStorage
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template.loader import render_to_string
@@ -437,3 +438,15 @@ def cancelar_inscricao(request, token_parsed):
     insc.delete()
     return redirect('/')
 
+
+def to_pdf(request):
+    html_string = render_to_string('app/pdf_template.html')
+
+    html = HTML(string=html_string)
+    html.write_pdf(target='/tmp/mypdf.pdf')
+
+    fs = FileSystemStorage('/tmp')
+    with fs.open('mypdf.pdf') as pdf:
+        response = HttpResponse(pdf, content_type='application/pdf')
+        response['Content-Disposition'] = 'attachment; filename="mypdf.pdf"'
+        return response
