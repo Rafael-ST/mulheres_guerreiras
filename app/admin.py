@@ -19,6 +19,10 @@ from django.template.loader import render_to_string
 from weasyprint import HTML
 from django.core.files.storage import FileSystemStorage
 
+from import_export import resources
+from import_export.admin import ImportExportModelAdmin
+from import_export.fields import Field
+
 
 class AgendamentoChipInline(admin.StackedInline):
     model = AgendamentoChip
@@ -402,7 +406,43 @@ class AvaliacaoContratoInline(admin.StackedInline):
     extra = 1
 
 
-class ContratoAdmin(admin.ModelAdmin):
+class ContratoResource(resources.ModelResource):
+    cpf = Field(attribute='proponente__cpf', column_name='CPF')
+    nome = Field(attribute='proponente__nome', column_name='Nome')
+    data_nascimento = Field(attribute='proponente__data_nascimento', column_name='Data de Nascimento')
+    nome_mae = Field(attribute='proponente__nome_mae', column_name='Nome da Mãe')
+    tipo_logradouro = Field(attribute='proponente__tipo_logradouro', column_name='Tipo de Logradouro')
+    logradouro = Field(attribute='proponente__logradouro', column_name='Logradouro')
+    numero = Field(attribute='proponente__numero', column_name='Número')
+    complemento = Field(attribute='proponente__complemento', column_name='Complemento')
+    cep = Field(attribute='proponente__cep', column_name='CEP')
+    bairro__descricao = Field(attribute='proponente__bairro__descricao', column_name='Bairro')
+    uf = Field(attribute='proponente__uf', column_name='UF')
+    municipio = Field(attribute='proponente__municipio', column_name='Municipio')
+    ddd_1 = Field(attribute='proponente__ddd_1', column_name='DDD')
+    telefone_1 = Field(attribute='proponente__telefone_1', column_name='Telefone')
+
+    class Meta:
+        model = Contrato
+        #widgets = {
+        #    'data_nascimento': {'format': '%d/%m/%Y'},
+        #}
+        fields = ('cpf', 'nome', 'data_nascimento', 'nome_mae',
+                  'tipo_logradouro', 'logradouro', 'numero',
+                  'complemento', 'cep', 'bairro__descricao', 'uf',
+                  'municipio', 'ddd_1', 'telefone_1')
+
+    def dehydrate_data_nascimento(self, obj):
+        if obj.pk:
+            return obj.proponente.data_nascimento.strftime('%d/%m/%Y')
+
+
+class ContratoTeste(admin.ModelAdmin):
+    resource_class = ContratoResource
+
+
+class ContratoAdmin(ImportExportModelAdmin, admin.ModelAdmin):
+    resource_class = ContratoResource
     list_display = ['proponente', 'ultima_avaliacao_fmt']
     search_fields = ('nome', 'cpf', )
     inlines = [AvaliacaoContratoInline, ]

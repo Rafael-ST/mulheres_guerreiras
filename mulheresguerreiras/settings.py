@@ -50,7 +50,6 @@ INSTALLED_APPS = [
     'django_admin_listfilter_dropdown',
     'django_select2',
     'bootstrap4',
-
 ]
 
 MIDDLEWARE = [

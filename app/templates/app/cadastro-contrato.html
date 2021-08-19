@@ -11,8 +11,8 @@
         <button type="submit">Submeter</button>
     </form>
     {% if imprimir == False %}
-        <a href="{% url 'export_proposta_pdf_prop' %}">download</a>
+        <a href="{% url 'to_pdf' %}">download</a>
     {% endif %}
-    <a href="{% url 'to_pdf' %}">download</a>
+
 
 {% endblock %}
