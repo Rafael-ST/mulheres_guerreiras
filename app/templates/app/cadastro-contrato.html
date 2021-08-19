@@ -11,8 +11,9 @@
         <button type="submit">Submeter</button>
     </form>
     {% if imprimir == True %}
-        <a href="">Clique aqui</a>
+        <a href="{% url 'to_pdf' contrato=contrato.cpf%}">download</a>
     {% endif %}
-    <a href="{% url 'to_pdf' %}">download</a>
+
+
 
 {% endblock %}

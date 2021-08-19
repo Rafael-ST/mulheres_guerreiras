@@ -593,7 +593,7 @@ class Contrato(BaseModel):
     cpf = models.CharField(max_length=30)
     file_cartao_cnpj = models.FileField(upload_to=upload_path_handler, blank=True, null=True,
                                         verbose_name='Cartao CNPJ')
-    status = models.CharField(max_length=30, choices=STATUS, default='1')
+    status = models.CharField(max_length=200, choices=STATUS)
 
     submissao = models.DateTimeField(blank=True, null=True, verbose_name='Última subimissão')
     ult_avaliacao_ok = models.BooleanField(default=False, verbose_name='Avaliado')

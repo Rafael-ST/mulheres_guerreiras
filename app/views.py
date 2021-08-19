@@ -386,7 +386,7 @@ def cadastro_contrato(request, token_parsed):
         except Contrato.DoesNotExist:
             imprimir = False
 
-    return render(request, "app/cadastro-contrato.html", {'form': form, 'imprimir': imprimir})
+    return render(request, "app/cadastro-contrato.html", {'form': form, 'imprimir': imprimir, 'contrato': contrato})
 
 
 @csrf_exempt
@@ -439,8 +439,11 @@ def cancelar_inscricao(request, token_parsed):
     return redirect('/')
 
 
-def to_pdf(request):
-    html_string = render_to_string('app/pdf_template.html')
+def to_pdf(request, contrato):
+    contratos = Contrato.objects.get(cpf=contrato)
+    html_string = render_to_string('app/comprovantecontrato.html', {'contratos': contratos})
+
+    print(contratos.proponente, "aaaaaaaaaaaaaaaaaaaaaaaaaaaa")
 
     html = HTML(string=html_string)
     html.write_pdf(target='/tmp/mypdf.pdf')

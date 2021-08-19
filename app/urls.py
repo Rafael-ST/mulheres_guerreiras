@@ -6,7 +6,7 @@ urlpatterns = [
     path('cadastro-proponente/', views.cadastro_proponente, name="cadastro_proponente"),
     path('cadastro-proposta/', views.cadastro_proposta, name="cadastro_proposta"),
     path('cadastro-contrato/', views.cadastro_contrato, name="cadastro_contrato"),
-    path('to_pdf/', views.to_pdf, name="to_pdf"),
+    path('to_pdf/(?P<contrato>[0-9]+)$', views.to_pdf, name="to_pdf"),
     path('cadastro-investimento/', views.cadastro_investimento, name="cadastro_investimento"),
     path('delete-investimento/<uuid:pk>/', views.delete_investimento, name='delete_investimento'),
 
