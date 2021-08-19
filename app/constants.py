@@ -348,7 +348,7 @@ ANOS = (
 
 STATUS = (
     ('1', u'Aguardando envio de documentação'),
-    ('Documentação enviada e em análise pela equipe do Programa Nossas Guerreiras', u'Documentação enviada e em análise pela equipe do Programa Nossas Guerreiras'),
+    ('2', u'Documentação enviada e em análise pela equipe do Programa Nossas Guerreiras'),
     ('3', u'Documentação analisada com sucesso sua documentação foi aceita'),
     ('4', u'Documentação analisada com sucesso sua documentação não foi aceita'),
     ('5', u'Aguardando realização da Capacitação'),

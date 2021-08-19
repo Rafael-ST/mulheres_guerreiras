@@ -9,7 +9,7 @@
     {% get_config_flag "cadastroprojeto" as cadastroprojeto_is_active %}
     {% get_config_flag "entregachip" as entregachip_is_active %}
     {% get_config_flag "inscricaocapacitacao" as inscricaocapacitacao_is_active %}
-    {% get_config_flag "contrato" as contrato_is_active %}
+    {% get_config_flag "cadastrocontrato" as cadastrocontrato_is_active %}
 
     <section class="">
         {% if messages %}
@@ -319,7 +319,7 @@
                             </div>
                         </div><!--***/Capacitação***-->
                     {% endif %}
-                    {% if contrato_is_active and projeto.is_aproved %}
+                    {% if cadastrocontrato_is_active  %}
                         <div class="col-lg-4 col-md-6 col-sm-12"><!--****Contrato-->
                             <div class="card card-profile">
                                 <div class="card-avatar">

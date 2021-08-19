@@ -10,7 +10,7 @@ from sso.decorators import check_auth_sso
 from sso.views import get_cadastro, redirect_to_login
 from weasyprint import HTML, CSS
 
-from app.constants import TIPO_NENHUM, TIPO_INV
+from app.constants import TIPO_NENHUM, TIPO_INV, STATUS
 from app.forms import InitialForm, ProponenteForm, PropostaForm, InvestimentoForm, ContratoForm,InscricoesForm#, EntregaChipForm
 from app.models import Proposta, BeneficiadoAnterior, Proponente, Configs, Atividade, Investimento, EntregaChip, \
     AgendamentoChip, Capacitacoes, Inscricao, Contrato
@@ -52,8 +52,9 @@ def index(request, token_parsed):
     else:
         try:
             proposta = Proposta.objects.get(proponente__cpf=token_parsed['preferred_username'])
-            #contrato = Contrato.objects.get(proponente__cpf=token_parsed['preferred_username'])
-            return render(request, "app/index.html", {'projeto': proposta})
+            contrato = Contrato.objects.get(proponente__cpf=token_parsed['preferred_username'])
+            print(contrato.submissao, "bbbbbbbbbbbbb")
+            return render(request, "app/index.html", {'projeto': proposta, 'contrato': contrato})
         except Proposta.DoesNotExist:
             form = None
             try:
@@ -364,7 +365,8 @@ def submeter_proponente(request, token_parsed):
 def cadastro_contrato(request, token_parsed):
     proponente = Proponente.objects.get(cpf=token_parsed['preferred_username'])
     contrato = Contrato.objects.get(proponente__cpf=token_parsed['preferred_username'])
-    print(contrato)
+    status = STATUS[2][1]
+    print(status)
     if request.method == "POST":
         if contrato.submissao:
             messages.error(request, "Alteração não realizada, este contrato já foi submetido")
@@ -441,7 +443,8 @@ def cancelar_inscricao(request, token_parsed):
 
 def to_pdf(request, contrato):
     contratos = Contrato.objects.get(cpf=contrato)
-    html_string = render_to_string('app/comprovantecontrato.html', {'contratos': contratos})
+    status = STATUS[2][1]
+    html_string = render_to_string('app/comprovantecontrato.html', {'contratos': contratos, 'status': status})
 
     print(contratos.proponente, "aaaaaaaaaaaaaaaaaaaaaaaaaaaa")
 
